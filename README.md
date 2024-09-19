@@ -16,3 +16,10 @@ We suggest that you begin by typing:
 
   cd swopp-client
   npm start
+
+
+  ceate new migrations using:
+   dotnet ef migrations add <MigrationName>:
+   
+   and then apply them:
+   using dotnet ef database update.

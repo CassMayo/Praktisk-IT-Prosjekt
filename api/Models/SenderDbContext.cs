@@ -6,6 +6,7 @@ namespace api.Models
     {
         public SenderDbContext(DbContextOptions<SenderDbContext> options) : base(options)
         {
+            Database.EnsureCreated();
         }
 
         public DbSet<Sender> Senders { get; set; }
