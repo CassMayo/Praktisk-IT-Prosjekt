@@ -1,5 +1,14 @@
 /* General body styles */
 /* light purple. possible secendary backgorund color rgb(122, 127, 191) */
+:root {
+    --font-family: 'Roboto', sans-serif;
+    --primary-background-color: rgb(91, 99, 200);
+    --secondary-background-color: #fff;
+    --primary-text-color: #252424;
+    --secondary-text-color: #fff;
+    --hover-color: rgb(63, 66, 121);
+    --button-color: rgb(91, 99, 200);
+}
 
 body {
     margin: 0;
@@ -14,31 +23,29 @@ body {
     font-family: var(--font-family);
 }
 
-:root {
-    --font-family: 'Roboto', sans-serif;
-    --primary-background-color: rgb(91, 99, 200);
-    --secondary-background-color: #fff;
-    --primary-text-color: #252424;
-    --secondary-text-color: #fff;
-    --hover-color: rgb(63, 66, 121);
-    --button-color: rgb(91, 99, 200);
+/* Main container to hold the two columns */
+.main-container {
+    display: flex;
+    width: 100%;
+    height: 100vh;
+    gap: 80px;
+    padding-left: 50px;
 }
 
 /* Registration container */
 article {
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
-    align-items: flex-start; 
+    justify-content: center;
     align-items: center; 
-    height: 100vh; 
+    width: 50%; /* Take up 50% of the width */
     padding: 20px;
+    box-sizing: border-box; /* Include padding in the width */
 }
-
 
 /* Title */
 .tittle h1{
-    color: white;
+    color: var(--secondary-text-color);
     font-size: 2.5rem;
     font-weight: bold;
     margin-bottom: 20px;
@@ -47,7 +54,7 @@ article {
 
 /* Sub title */
 .tittle h2 {
-    color: white;
+    color: var(--secondary-text-color);
     font-size: 1.5rem;
     font-weight: bold;
     margin-bottom: 40px;
@@ -68,6 +75,24 @@ article {
     margin: 0;
 }
 
+/* Error messages */
+p {
+    font-size: 1rem;
+    margin-bottom: 15px;
+}
+
+.illustration {
+    width: 50%; /* Take up 50% of the width */
+    padding-top: 180px; /* Center the image, will fix later on so it alignes with the form and not the article*/
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: inherit /* Light grey background for the photo column */
+}
+
+.registration-container input:focus {
+    background-color: rgba(188, 191, 235, 0.286); /* Light blue when focused */
+}
 
 /* Input fields */
 .registration-container input {
@@ -79,16 +104,12 @@ article {
     margin: 10px 0;
     border: 1px solid var(--primary-background-color);
     border-radius: 8px;
-    background-color: #f0f8ff;
     color: var(--primary-text-color);
     font-size: 1rem;
     outline: none;
     transition: background-color 0.2s ease;
 }
 
-.registration-container input:focus {
-    background-color: rgba(188, 191, 235, 0.286); /* Light blue when focused */
-}
 
 /* Label styling*/
 .registration-container label {
@@ -122,11 +143,5 @@ article {
 .registration-container button:disabled {
     background-color: #cccccc; /* Grey color when disabled */
     cursor: not-allowed;
-}
-
-/* Error messages */
-p {
-    font-size: 1rem;
-    margin-bottom: 15px;
 }
 
