@@ -48,7 +48,8 @@ const Register = () => {
   return (
     <article>
     <div>
-      <h1>User Registration</h1>
+      <h1>Welcome!</h1>
+      <h2>Ready to make sending easier?</h2>
       {message && <p style={{ color: 'green' }}>{message}</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <form onSubmit={handleSubmit}>
