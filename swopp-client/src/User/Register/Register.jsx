@@ -47,13 +47,14 @@ const Register = () => {
 
   return (
     <article>
-    <div>
+    <div className="tittle">
       <h1>Welcome!</h1>
       <h2>Ready to make sending easier?</h2>
+    </div>
+      <div className="registration-container"> 
       {message && <p style={{ color: 'green' }}>{message}</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <form onSubmit={handleSubmit}>
-        <div className="registration-container"> 
           <label>Name:</label>
           <input
             type="text"
@@ -88,10 +89,8 @@ const Register = () => {
         <button type="submit" disabled={loading}>
           {loading ? 'Registering...' : 'Register'} {/* Button text changes based on loading state */}
         </button>
+        </form>
         </div>
-      </form>
-    </div>
-
     </article>
   );
 };

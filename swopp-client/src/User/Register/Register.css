@@ -1,14 +1,16 @@
 /* General body styles */
+/* light purple. possible secendary backgorund color rgb(122, 127, 191) */
+
 body {
     margin: 0;
     padding: 0;
     height: 100%;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    display: flex;
+    display: flex; 
     justify-content: center;
     align-items: center;
-    background: linear-gradient(rgb(91, 99, 200), #fff); /* Blue gradient background */
+    background: linear-gradient(to bottom, rgb(90, 98, 200), 50%,rgb(134, 139, 197) 70%); /* Blue gradient background */
     font-family: var(--font-family);
 }
 
@@ -18,27 +20,33 @@ body {
     --secondary-background-color: #fff;
     --primary-text-color: #252424;
     --secondary-text-color: #fff;
-    --hover-color: #3e3d44;
+    --hover-color: rgb(63, 66, 121);
     --button-color: rgb(91, 99, 200);
 }
 
 /* Registration container */
 article {
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start; 
+    align-items: center; 
     height: 100vh; 
+    padding: 20px;
 }
 
-h1 {
+
+/* Title */
+.tittle h1{
     color: white;
     font-size: 2.5rem;
     font-weight: bold;
     margin-bottom: 20px;
     text-align: center;
 }
-/* Title "User Registration" */
-h2 {
+
+/* Sub title */
+.tittle h2 {
     color: white;
     font-size: 1.5rem;
     font-weight: bold;
@@ -51,18 +59,23 @@ h2 {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background-color: white;
-    padding: 30px;
+    background-color: rgba(255, 255, 255, 0.93);
+    padding: 40px;
     border-radius: 10px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* 3D shadow effect */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 3D shadow effect */
+    max-width: 800px; 
     width: 100%; 
-    max-width: 400px; 
+    margin: 0;
 }
+
 
 /* Input fields */
 .registration-container input {
     width: 100%;
+    max-width: 400px;
+    margin-bottom: 20px;
     padding: 10px;
+    box-sizing: border-box;
     margin: 10px 0;
     border: 1px solid var(--primary-background-color);
     border-radius: 8px;
@@ -74,7 +87,7 @@ h2 {
 }
 
 .registration-container input:focus {
-    background-color: #e6f2ff; /* Light blue when focused */
+    background-color: rgba(188, 191, 235, 0.286); /* Light blue when focused */
 }
 
 /* Label styling*/
@@ -88,7 +101,10 @@ h2 {
 /* Button styling */
 .registration-container button {
     width: 100%;
-    padding: 12px;
+    max-width: 400px;
+    margin-bottom: 20px;
+    padding: 10px;
+    box-sizing: border-box;
     background-color: var(--button-color);
     color: white;
     border: none;
