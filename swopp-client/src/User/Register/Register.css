@@ -1,0 +1,45 @@
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  
+  :root {
+    --font-family: 'Roboto', sans-serif;
+    --primary-background-color: rgb(91, 99, 200);
+    --secondary-background-color:#fff ;
+    --primary-text-color: #252424;
+    --secondary-text-color: #fff;
+    --hover-color: #3e3d44;
+    --button-color: rgb(91, 99, 200);
+  
+  }
+  
+  article {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-image: linear-gradient(rgb(91, 99, 200),#fff);
+  }
+
+  
+  .registration-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: white;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
+  }
+
+  .registration-container h2 {
+    text-align: center; /* Center the title */
+  }

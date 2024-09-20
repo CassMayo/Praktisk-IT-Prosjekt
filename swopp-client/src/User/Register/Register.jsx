@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './Register.css';
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -45,12 +46,13 @@ const Register = () => {
   };
 
   return (
+    <article>
     <div>
-      <h2>Register</h2>
+      <h2>User Registration</h2>
       {message && <p style={{ color: 'green' }}>{message}</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <form onSubmit={handleSubmit}>
-        <div>
+        <div className="registration-container"> 
           <label>Name:</label>
           <input
             type="text"
@@ -60,7 +62,6 @@ const Register = () => {
             required
             disabled={loading} // Disable during loading
           />
-        </div>
         <div>
           <label>Email:</label>
           <input
@@ -81,13 +82,16 @@ const Register = () => {
             onChange={handleChange}
             required
             disabled={loading} // Disable during loading
-          />
+          /> 
         </div>
         <button type="submit" disabled={loading}>
           {loading ? 'Registering...' : 'Register'} {/* Button text changes based on loading state */}
         </button>
+        </div>
       </form>
     </div>
+
+    </article>
   );
 };
 
