@@ -1,5 +1,6 @@
 import React from "react";
-
+import "./Login.css";
+    
 const Login = () => {
     //Handle the login form submission
     const handleSubmit = (e) => {
@@ -34,7 +35,7 @@ const Login = () => {
     }
 
     return (
-        <div>
+        <div className="Login">
             <h2>Login</h2>
             <form onSubmit={handleSubmit}>
                 <label htmlFor="email">Email:</label>
