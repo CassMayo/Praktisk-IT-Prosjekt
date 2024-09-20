@@ -1,45 +1,109 @@
+/* General body styles */
 body {
     margin: 0;
     padding: 0;
     height: 100%;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-  }
-  
-  
-  :root {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: linear-gradient(rgb(91, 99, 200), #fff); /* Blue gradient background */
+    font-family: var(--font-family);
+}
+
+:root {
     --font-family: 'Roboto', sans-serif;
     --primary-background-color: rgb(91, 99, 200);
-    --secondary-background-color:#fff ;
+    --secondary-background-color: #fff;
     --primary-text-color: #252424;
     --secondary-text-color: #fff;
     --hover-color: #3e3d44;
     --button-color: rgb(91, 99, 200);
-  
-  }
-  
-  article {
+}
+
+/* Registration container */
+article {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    background-image: linear-gradient(rgb(91, 99, 200),#fff);
-  }
+    height: 100vh; 
+}
 
-  
-  .registration-container {
+/* Title "User Registration" */
+h1 {
+    color: white;
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Form flexbox container */
+.registration-container {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    justify-content: center;
     background-color: white;
-    padding: 40px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    max-width: 800px;
-    width: 100%;
-    margin: 0 auto;
-  }
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* 3D shadow effect */
+    width: 100%; 
+    max-width: 400px; 
+}
 
-  .registration-container h2 {
-    text-align: center; /* Center the title */
-  }
+/* Input fields */
+.registration-container input {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid var(--primary-background-color);
+    border-radius: 8px;
+    background-color: #f0f8ff;
+    color: var(--primary-text-color);
+    font-size: 1rem;
+    outline: none;
+    transition: background-color 0.2s ease;
+}
+
+.registration-container input:focus {
+    background-color: #e6f2ff; /* Light blue when focused */
+}
+
+/* Label styling*/
+.registration-container label {
+    font-weight: bold;
+    color: var(--primary-text-color);
+    margin-bottom: 5px;
+    text-align: left;
+}
+
+/* Button styling */
+.registration-container button {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--button-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+}
+
+.registration-container button:hover {
+    background-color: var(--hover-color);
+}
+
+.registration-container button:disabled {
+    background-color: #cccccc; /* Grey color when disabled */
+    cursor: not-allowed;
+}
+
+/* Error messages */
+p {
+    font-size: 1rem;
+    margin-bottom: 15px;
+}
+

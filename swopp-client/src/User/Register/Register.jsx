@@ -48,7 +48,7 @@ const Register = () => {
   return (
     <article>
     <div>
-      <h2>User Registration</h2>
+      <h1>User Registration</h1>
       {message && <p style={{ color: 'green' }}>{message}</p>}
       {error && <p style={{ color: 'red' }}>{error}</p>}
       <form onSubmit={handleSubmit}>
