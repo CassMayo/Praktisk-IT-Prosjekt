@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';  // Import the useNavigate hook
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -9,6 +10,8 @@ const Register = () => {
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false); // New loading state
+
+  const navigate = useNavigate();  // Initialize the useNavigate hook
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -33,6 +36,11 @@ const Register = () => {
       if (response.ok) {
         const data = await response.json();
         setMessage(data.message); // Show success message
+        
+        // Redirect to the login page after 2 seconds
+        setTimeout(() => {
+          navigate('/login');  // Redirect to login page
+        }, 2000);
       } else {
         const errorData = await response.json();
         setError(errorData.message || 'Registration failed.'); // Handle error
