@@ -48,57 +48,57 @@ const Register = () => {
 
   return (
   <div className="main-container">
-     <article>
-    <div className="tittle">
-      <h1>Welcome!</h1>
-      <h2>Ready to make sending easier?</h2>
-    </div>
-      <div className="registration-container"> 
-      {message && <p style={{ color: 'green' }}>{message}</p>}
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-        <form onSubmit={handleSubmit}>
-            <label>Name:</label>
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-              disabled={loading} // Disable during loading
-            />
-          <div>
-            <label>Email:</label>
-            <input
-              type="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              required
-              disabled={loading} // Disable during loading
-            />
-          </div>
-          <div>
-            <label>Password:</label>
-            <input
-              type="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              required
-              disabled={loading} // Disable during loading
-            /> 
-          </div>
-          <button type="submit" disabled={loading}>
-            {loading ? 'Registering...' : 'Register'} {/* Button text changes based on loading state */}
-          </button>
-        </form>
+    <article>
+      <div className="tittle">
+        <h1>Welcome!</h1>
+        <h2>Ready to make sending easier?</h2>
       </div>
-    </article>
-    <div className="illustration">
-      <img src={RegistrationIllustration} alt="Illustration" style={{ maxWidth: '100%', height: 'auto' }} />
+      <div className="registration-container"> 
+        {message && <p style={{ color: 'green' }}>{message}</p>}
+        {error && <p style={{ color: 'red' }}>{error}</p>}
+        <form onSubmit={handleSubmit}>
+              <label>Name:</label>
+              <input
+                type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
+                required
+                disabled={loading} // Disable during loading
+              />
+            <div>
+              <label>Email:</label>
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+                disabled={loading} // Disable during loading
+              />
+            </div>
+            <div>
+              <label>Password:</label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+                disabled={loading} // Disable during loading
+              /> 
+            </div>
+            <button type="submit" disabled={loading}>
+              {loading ? 'Registering...' : 'Register'} {/* Button text changes based on loading state */}
+            </button>
+          </form>
+        </div>
+      </article>
+      <div className="illustration">
+        <img src={RegistrationIllustration} alt="Illustration" style={{ maxWidth: '100%', height: 'auto' }} />
+      </div>
     </div>
-  </div>
-  );
-};
+    );
+  };
 
 export default Register;

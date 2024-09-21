@@ -30,6 +30,7 @@ body {
     height: 100vh;
     gap: 80px;
     padding-left: 50px;
+    align-items: center; /* Nessescary? */
 }
 
 /* Registration container */
@@ -38,7 +39,7 @@ article {
     flex-direction: column;
     justify-content: center;
     align-items: center; 
-    width: 50%; /* Take up 50% of the width */
+    flex: 1;
     padding: 20px;
     box-sizing: border-box; /* Include padding in the width */
 }
@@ -66,12 +67,12 @@ article {
     display: flex;
     flex-direction: column;
     justify-content: center;
-    background-color: rgba(255, 255, 255, 0.93);
-    padding: 40px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* 3D shadow effect */
-    max-width: 800px; 
     width: 100%; 
+    padding: 40px;
+    background-color: rgba(255, 255, 255, 0.93);
+    border-radius: 10px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* 3D shadow effect */
+    max-width: 800px; 
     margin: 0;
 }
 
@@ -82,12 +83,11 @@ p {
 }
 
 .illustration {
-    width: 50%; /* Take up 50% of the width */
+    flex: 1%; /* Take up 50% of the width */
     padding-top: 180px; /* Center the image, will fix later on so it alignes with the form and not the article*/
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: inherit /* Light grey background for the photo column */
 }
 
 .registration-container input:focus {
@@ -134,6 +134,7 @@ p {
     cursor: pointer;
     margin-top: 20px;
     transition: background-color 0.3s ease;
+    font-weight: bold;
 }
 
 .registration-container button:hover {
