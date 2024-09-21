@@ -108,6 +108,7 @@ p {
     font-size: 1rem;
     outline: none;
     transition: background-color 0.2s ease;
+    background-color: rgba(188, 191, 235, 0.286);
 }
 
 
