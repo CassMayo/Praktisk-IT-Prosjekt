@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-<<<<<<< HEAD:swopp-client/src/Components/User/Register/Register.jsx
 import { useNavigate } from 'react-router-dom';  // Import the useNavigate hook
-=======
 import './Register.css';
-import RegistrationIllustration from '../Assets/RegistrationIllustration.png';
->>>>>>> Register:swopp-client/src/User/Register/Register.jsx
+import RegistrationIllustration from '../../../User/Assets/RegistrationIllustration.png';
+
 
 const Register = () => {
   const [formData, setFormData] = useState({
