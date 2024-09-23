@@ -74,4 +74,66 @@ namespace api.Controllers
                     _logger.LogError(ex, "An error occurred while registering {Email}", registrationDTO.Email);
                     // Return a 500 Internal Server Error response
                     return StatusCode(500, new { message = "An internal server error occurred. Please try again later." });
-                }}}}
+                }
+                }
+              
+
+                // Define an HTTP POST method for logging in a sender (user)
+                [HttpPost("login")]
+                public async Task<IActionResult> Login([FromBody] SenderLoginDTO loginDTO)
+                {
+                    // Log the start of the login process
+                    _logger.LogInformation("Starting login process for {Email}", loginDTO.Email);
+
+                    // Check if the incoming data (loginDTO) is valid based on the validation attributes in SenderLoginDTO
+                    if (!ModelState.IsValid)
+                    {
+                        // Log a warning if the data is invalid
+                        _logger.LogWarning("Login failed for {Email} due to invalid model state", loginDTO.Email);
+                        // Return a 400 BadRequest response with validation error details
+                        return BadRequest(ModelState);
+                    }
+
+                    try
+                    {
+                        // Get the sender from the database using the repository
+                        var sender = await _senderRepository.GetSenderByEmailAsync(loginDTO.Email);
+
+                        // If no sender is found with the provided email, return a 404 Not Found response
+                        if (sender == null)
+                        {
+                            // Log a warning that the email was not found
+                            _logger.LogWarning("Login failed for {Email} - Email not found", loginDTO.Email);
+                            // Return a 404 Not Found response with a message
+                            return NotFound(new { message = "Email not found." });
+                        }
+
+                        // Check if the provided password matches the sender's password
+                        if (sender.Password != loginDTO.Password)
+                        {
+                            // Log a warning that the password is incorrect
+                            _logger.LogWarning("Login failed for {Email} - Incorrect password", loginDTO.Email);
+                            // Return a 401 Unauthorized response with a message
+                            return Unauthorized(new { message = "Incorrect password." });
+                        }
+
+                        // Log that the login was successful
+                        _logger.LogInformation("Login successful for {Email}", loginDTO.Email);
+                        // Return a 200 OK response with a success message
+                         return Ok(new { name = sender.Name, email = sender.Email });
+                    }
+                    catch (Exception ex)
+                    {
+                        // Log the exception if something goes wrong
+                        _logger.LogError(ex, "An error occurred while logging in {Email}", loginDTO.Email);
+                        // Return a 500 Internal Server Error response
+                        return StatusCode(500, new { message = "An internal server error occurred. Please try again later." });
+                    }
+
+
+                }
+                }
+
+}
+
+            

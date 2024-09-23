@@ -16,7 +16,7 @@ const UserPage = () => {
 
   return (
     <article className="MainIndex">
-      <h2>SWOPPPPP</h2>
+      <h2>SWOPP</h2>
       <button onClick={goToLogin}>Go to Login</button>
       <button onClick={goToRegister}>Go to Register</button>
     </article>

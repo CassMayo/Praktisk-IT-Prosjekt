@@ -2,9 +2,9 @@
 bin/
 obj/
 
-# Ignore logs
-APILogs/
+#Ignore logs
 *.log
+
 
 # Ignore user-specific files
 *.user
