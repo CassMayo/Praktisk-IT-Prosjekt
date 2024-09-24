@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';  // Import the useNavigate hook
 import './Register.css';
-import RegistrationIllustration from '../../../User/Assets/RegistrationIllustration.png';
+import RegistrationIllustration from '../../../Assets/RegistrationIllustration.png';  // Import the registration illustration
 
 
 const Register = () => {
