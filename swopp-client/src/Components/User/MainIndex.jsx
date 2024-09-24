@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router-dom"; // Import the useNavigate hook
 import "./MainIndex.css";
+import WhiteLogo from "../../Assets/White_Swopp.png"; // Import the Swopp logo
 
 const UserPage = () => {
   const navigate = useNavigate(); // Initialize the hook for navigation
@@ -16,9 +17,13 @@ const UserPage = () => {
 
   return (
     <article className="MainIndex">
-      <h2>SWOPP</h2>
-      <button onClick={goToLogin}>Go to Login</button>
-      <button onClick={goToRegister}>Go to Register</button>
+      <div className="Logo">
+        <img src={WhiteLogo} alt="Swopp Logo" />
+      </div>
+      <div className="Button">
+      <button onClick={goToLogin}>Login</button>
+      <button onClick={goToRegister}>Register</button>
+      </div>
     </article>
   );
 };
