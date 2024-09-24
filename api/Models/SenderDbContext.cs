@@ -6,7 +6,6 @@ namespace api.Models
     {
         public SenderDbContext(DbContextOptions<SenderDbContext> options) : base(options)
         {
-            Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 

@@ -137,6 +137,16 @@ p {
     cursor: not-allowed;
 }
 
+.SuccessMessage {
+    color: green;
+    font-size: 1rem;
+    margin-bottom: 15px;
+}
+.ErrorMessage {
+    color: red;
+    font-size: 1rem;
+    margin-bottom: 15px;
+}
 
 @media only screen and (max-width: 600px) {
     .main-container {

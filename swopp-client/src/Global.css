@@ -4,8 +4,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
-
 :root {
   --font-family: 'Roboto', sans-serif;
   --primary-background-color: #3e3ef7;
