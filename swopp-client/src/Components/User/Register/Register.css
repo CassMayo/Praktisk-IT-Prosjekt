@@ -1,15 +1,5 @@
 /* General body styles */
 /* light purple. possible secendary backgorund color rgb(122, 127, 191) */
-:root {
-    --font-family: 'Roboto', sans-serif;
-    --primary-background-color: rgb(91, 99, 200);
-    --secondary-background-color: #fff;
-    --primary-text-color: #252424;
-    --secondary-text-color: #fff;
-    --hover-color: rgb(63, 66, 121);
-    --button-color: rgb(91, 99, 200);
-}
-
 body {
     margin: 0;
     padding: 0;
@@ -127,7 +117,7 @@ p {
     margin-bottom: 20px;
     padding: 10px;
     box-sizing: border-box;
-    background-color: var(--button-color);
+    background-color: var(--secondary-button-color);
     color: white;
     border: none;
     border-radius: 8px;
@@ -139,7 +129,7 @@ p {
 }
 
 .registration-container button:hover {
-    background-color: var(--hover-color);
+    background-color: var(--primary-button-color);
 }
 
 .registration-container button:disabled {
