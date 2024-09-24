@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1183.99 522.03">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #59ce76;
+        font-family: Galvji-BoldOblique, Galvji;
+        font-size: 342.97px;
+        font-style: oblique;
+        font-weight: 700;
+      }
+
+      .cls-1, .cls-2 {
+        stroke: #59ce76;
+        stroke-miterlimit: 10;
+      }
+
+      .cls-2 {
+        fill: none;
+        stroke-width: 34.99px;
+      }
+    </style>
+  </defs>
+  <g id="Layer_1-2" data-name="Layer 1">
+    <g>
+      <text class="cls-1" transform="translate(.5 292.81)"><tspan x="0" y="0">Swopp</tspan></text>
+      <path class="cls-2" d="m1114.57,399.2s-74.61,105.34-219.45,105.34-230.42-105.34-230.42-105.34"/>
+      <polyline class="cls-2" points="1015.48 408.8 1123.04 384.42 1133.08 476.21"/>
+    </g>
+  </g>
+</svg>
