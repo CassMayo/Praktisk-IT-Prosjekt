@@ -6,13 +6,11 @@ namespace api.DAL
 {
     public interface ISenderRepository
     {
-        //ps: jeg co-pilota d her
+        //ps: jeg co-pilota d her --> reply j: så mye redundant, removed that shit
         Task<IEnumerable<Sender>> GetAllSendersAsync();
-        Task<Sender> GetSenderByIdAsync(int id);
         Task<Sender?> GetSenderByEmailAsync(string email);
         Task AddSenderAsync(Sender sender);
         Task UpdateSenderAsync(Sender sender);
         Task DeleteSenderAsync(int id);
-        Task<bool> SenderExistsAsync(int id);
     }
 }

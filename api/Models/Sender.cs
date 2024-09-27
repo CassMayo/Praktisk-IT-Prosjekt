@@ -5,10 +5,9 @@ namespace api.Models
 {
     public class Sender
     {
-        [Key]
-        public int UserId { get; set; }
-
         public required string Name { get; set; }
+        
+        [Key]
         public required string Email { get; set; }
 
         public required String Password { get; set; }    

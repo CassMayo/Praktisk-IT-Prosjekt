@@ -8,9 +8,9 @@ namespace api.DAL
     //ps: guess what jeg gjorde her, co-pilot
     public class SenderRepository : ISenderRepository
     {
-        private readonly SenderDbContext _context;
+        private readonly AppDbContext _context;
 
-        public SenderRepository(SenderDbContext context)
+        public SenderRepository(AppDbContext context)
         {
             _context = context;
         }
@@ -18,16 +18,6 @@ namespace api.DAL
         public async Task<IEnumerable<Sender>> GetAllSendersAsync()
         {
             return await _context.Senders.ToListAsync();
-        }
-
-        public async Task<Sender> GetSenderByIdAsync(int id)
-        {
-            var sender = await _context.Senders.FindAsync(id);
-            if (sender == null)
-            {
-                throw new KeyNotFoundException("Sender not found.");
-            }
-            return sender;
         }
 
         public async Task<Sender?> GetSenderByEmailAsync(string email)
@@ -56,11 +46,6 @@ namespace api.DAL
                 _context.Senders.Remove(sender);
                 await _context.SaveChangesAsync();
             }
-        }
-
-        public async Task<bool> SenderExistsAsync(int id)
-        {
-            return await _context.Senders.AnyAsync(s => s.UserId == id);
         }
     }
 }

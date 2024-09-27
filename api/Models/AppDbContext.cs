@@ -2,9 +2,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace api.Models
 {
-    public class SenderDbContext : DbContext
+    public class AppDbContext : DbContext
     {
-        public SenderDbContext(DbContextOptions<SenderDbContext> options) : base(options)
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
             Database.EnsureCreated();
         }
