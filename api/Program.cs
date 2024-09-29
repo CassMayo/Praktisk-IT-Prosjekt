@@ -1,4 +1,4 @@
-using api.Models;
+using api.DAL.Models;
 using Microsoft.EntityFrameworkCore;
 using api.DAL;
 using Serilog;
@@ -29,7 +29,7 @@ builder.Services.AddCors(options =>
                 builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
         });
 // Register the SenderRepository with Dependency Injection
-builder.Services.AddScoped<ISenderRepository, SenderRepository>();
+//builder.Services.AddScoped<ISenderRepository, SenderRepository>();                            -----------------------------
 
 
 builder.Services.AddControllers();
