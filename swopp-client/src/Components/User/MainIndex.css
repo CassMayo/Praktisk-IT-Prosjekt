@@ -33,15 +33,16 @@ body {
     font-size: 1rem;
     cursor: pointer;
     transition: background-color 0.3s;
+    font-weight: bold;
   }
 
-  button:hover{
-    opacity: 0.7;
+  .MainIndex :nth-child(1):hover{
+    background-color: #d9dae6;
   }
+  
   .MainIndex button:hover{
-    background-color: var(--secondary-button-color );
+    background-color: var(--secondary-button-color);
   }
-
 
   .Logo img{
     width: 100%;
