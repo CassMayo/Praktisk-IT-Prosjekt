@@ -31,8 +31,15 @@ const Login = () => {
                 const result = await response.json();
                 setErrorMessage(''); // Clear any error
                 console.log("API response:", result); // Check if name and email are coming correctly
-                setUser({ name: result.name, email: result.email }); // Set the user in the context
-                navigate("/Order"); // Navigate to order page
+
+                // Store the token in local storage
+                localStorage.setItem('token', result.token);
+
+                // Set the user in the context
+                setUser({ name: result.name, email: result.email }); 
+                
+                // Navigate to order page
+                navigate("/Order"); 
             } else {
                 const errorData = await response.json();
                 console.log(errorData); // Log the error for debugging
