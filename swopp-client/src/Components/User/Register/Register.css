@@ -9,7 +9,7 @@ body {
     display: flex; 
     justify-content: center;
     align-items: center;
-    background: linear-gradient(to bottom, rgb(90, 98, 200), 50%,rgb(134, 139, 197) 70%); /* Blue gradient background */
+    background: linear-gradient(to bottom, #5a62c8, 50%,#868bc5 70%); /* Blue gradient background */
     font-family: var(--font-family);
 }
 
@@ -117,7 +117,7 @@ p {
     margin-bottom: 20px;
     padding: 10px;
     box-sizing: border-box;
-    background-color: var(--secondary-button-color);
+    background-color: var(--primary-button-color);
     color: white;
     border: none;
     border-radius: 8px;
@@ -129,7 +129,7 @@ p {
 }
 
 .registration-container button:hover {
-    background-color: var(--primary-button-color);
+    background-color: var(--secondary-button-color);
 }
 
 .registration-container button:disabled {
