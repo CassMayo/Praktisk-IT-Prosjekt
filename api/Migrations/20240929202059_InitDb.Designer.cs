@@ -11,8 +11,8 @@ using api.DAL.Models;
 namespace api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240929184754_UpdateUserModel")]
-    partial class UpdateUserModel
+    [Migration("20240929202059_InitDb")]
+    partial class InitDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

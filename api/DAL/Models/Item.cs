@@ -14,7 +14,7 @@ namespace api.DAL.Models
 
         public required string ItemName { get; set; }  // Required name of the item
         
-        public ItemType ItemType { get; set; } = ItemType.Other;  // Default item type
+        public required ItemType ItemType { get; set; }
         
         public required string Description { get; set; }  // Required description of the item
         

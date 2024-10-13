@@ -1,5 +1,5 @@
 using api.DAL.Models;
-using api.DAL.DTOs;
+using api.DAL.DTOs.User;
 using api.DAL.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 

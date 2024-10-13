@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace api.DAL.DTOs
+namespace api.DAL.DTOs.User
 {
     public class UserLoginDTO
     {
