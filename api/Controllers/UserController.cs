@@ -125,5 +125,30 @@ namespace api.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
+
+        //Get User profile
+        [HttpGet("profile")]
+        public async Task<IActionResult> GetUserProfile()
+        {
+            try{
+                //Extract email from the "JWT" Token's 'sub' claim
+                var email = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+                if(email == null){
+                    return Unauthorized(new { message = "Unauthorized" });
+                }
+                //fetch the user details from the repository
+                        // kode her...
+                
+                //Return the User's profile details
+                        // kode her...
+            }
+            catch (Exception ex){
+                _logger.LogError(ex, "An error occurred while fetching user profile");
+                return StatusCode(500, new { message = "An internal server error occurred. Please try again later." });
+            }
+        }
+        
+
+        
     }
 }
