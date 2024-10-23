@@ -15,10 +15,22 @@
     color: #333;
     font-size: 16px;
     font-weight: bold;
-    display: flex;
   }
   
   .nav-link:hover {
     color: #000000;
   }
-  
+
+  /* Media query for desktop mode (nav bar at the top) */
+@media (min-width: 768px) {
+    .bottom-nav {
+      position: fixed;
+      top: 0;
+      bottom: unset;
+      width: 100%;
+      background-color: #ffffff;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      justify-content: space-around;
+      padding: 10px 0;
+    }
+}
