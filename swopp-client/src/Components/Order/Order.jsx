@@ -9,7 +9,7 @@ const Order = () => {
   return (
     <div>
       <h1>Swopp</h1>
-      <p>Welcome, {user?.name}!</p>
+      <p>Welcome, {user.name}!</p>
       <p>ORDER REGISTRATION</p>
 
       <form>
