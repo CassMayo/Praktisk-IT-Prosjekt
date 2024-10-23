@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { UserContext } from '../Context/UserContext';
-import BottomNavBar from '../Navigation/BottomNavBar'; // Assuming you're using BottomNavBar
+import NavBar from '../Navigation/NavBar'; // Assuming you're using NavBar
 
 const Order = () => {
   const { user } = useContext(UserContext);
@@ -26,7 +26,7 @@ const Order = () => {
       </form>
 
       {/* Navigation Bar */}
-      <BottomNavBar />
+      <NavBar />
     </div>
   );
 };
