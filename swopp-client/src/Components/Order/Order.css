@@ -1,0 +1,158 @@
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    padding: 20px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  
+  h1 {
+    color: var(--secondary-text-color);
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  
+  h2 {
+    color: var(--secondary-text-color);
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 40px;
+    text-align: center;
+  }
+  
+  /* Similar to the .login class */
+  .order {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    height: 100vh;
+    gap: 45px;
+  }
+  
+  /* Similar to the .login-left class */
+  .order-left {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
+    flex: 1;
+  }
+  
+  /* Similar to the .login-input class */
+  .order-input {
+    width: 479px;
+    height: 100%;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* 3D shadow effect */
+  }
+  
+  .order-input form {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    background-color: var(--secondary-background-color);
+    padding: 40px;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 10px;
+  }
+  
+  .order-input label {
+    font-weight: bold;
+    color: var(--primary-text-color);
+    margin-bottom: 5px;
+    text-align: left;
+  }
+  
+  .order-input input {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 20px;
+    padding: 10px;
+    box-sizing: border-box;
+    margin: 10px 0;
+    border: 1px solid var(--primary-background-color);
+    border-radius: 8px;
+    color: var(--primary-text-color);
+    font-size: 1rem;
+    outline: none;
+    transition: background-color 0.2s ease;
+    background-color: rgba(188, 191, 235, 0.286);
+  }
+  
+  .order-input button {
+    width: 100%;
+    max-width: 400px;
+    margin-bottom: 20px;
+    padding: 10px;
+    box-sizing: border-box;
+    background-color: var(--primary-button-color);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+  }
+  
+  .order-input button:hover {
+    background-color: var(--secondary-button-color);
+  }
+  
+  /* Similar to the .login-right class */
+  .order-right {
+    display: flex;
+    align-items: self-start;
+    padding-top: 180px;
+    flex: 1;
+  }
+  
+  .order-right img {
+    width: 380px;
+    height: auto;
+  }
+  
+  @media (max-width: 768px) {
+    .order {
+      flex-direction: column;
+      gap: 20px;
+    }
+  
+    .order-left {
+      padding: 20px;
+    }
+  
+    .order-right {
+      padding: 20px;
+    }
+  
+    .order-right img {
+      width: 100%;
+    }
+  
+    .order-input {
+      width: 100%;
+    }
+  
+    .order-input form {
+      padding: 40px;
+      gap: 5px;
+    }
+  
+    .order-input input {
+      max-width: 100%;
+      width: 260px;
+    }
+  
+    .order-input button {
+      max-width: 100%;
+    }
+  }
+  
