@@ -138,9 +138,23 @@ namespace api.Controllers
                 }
                 //fetch the user details from the repository
                         // kode her...
-                
+                var user = await _userRepository.GetUserByEmailAsync(email);
+                if (user == null)
+                {
+                    return NotFound(new { message = "User not found" });
+                }
+
                 //Return the User's profile details
                         // kode her...
+                var userProfile = new 
+                {
+                    Name = user.Name,
+                    Email = user.Email
+                
+                };
+
+                return Ok(userProfile);
+     
             }
             catch (Exception ex){
                 _logger.LogError(ex, "An error occurred while fetching user profile");
