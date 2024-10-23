@@ -39,7 +39,7 @@ const Login = () => {
                 setUser({ name: result.name, email: result.email }); 
                 
                 // Navigate to order page
-                navigate("/Order"); 
+                navigate("/home");
             } else {
                 const errorData = await response.json();
                 console.log(errorData); // Log the error for debugging

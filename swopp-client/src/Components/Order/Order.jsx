@@ -10,8 +10,25 @@ import { UserContext } from "../Context/UserContext";
             <h1>Swopp</h1>
             <p>Welcome, {user.name}!</p>
             <p>ORDER REGISTRATION</p>
-            </div>
-        );
-        }
+            
+            <form>
+                <label>Departure Address</label>
+                <input type="text" placeholder="Departure Address" required />
 
-    export default Order;
+                <label>Destination Address</label>
+                <input type="text" placeholder="Destination Address" required />
+
+                <label>Date & Time</label>
+                <input type="datetime-local" required />
+
+                <button type="submit">Swopp away!</button>
+            </form>
+      </div>
+
+        {/* Navigation Bar */}
+      <NavBar />
+    </div>
+  );
+};
+
+export default HomePage;
