@@ -1,34 +1,34 @@
-import React, { useContext } from "react";
-import { UserContext } from "../Context/UserContext";
+import React, { useContext } from 'react';
+import { UserContext } from '../Context/UserContext';
+import BottomNavBar from '../Navigation/BottomNavBar'; // Assuming you're using BottomNavBar
 
-    const Order = () => {
-        const { user } = useContext(UserContext);
-        console.log("User data in Order component:", user); 
+const Order = () => {
+  const { user } = useContext(UserContext);
+  console.log("User data in Order component:", user);
 
-        return (
-            <div>
-            <h1>Swopp</h1>
-            <p>Welcome, {user.name}!</p>
-            <p>ORDER REGISTRATION</p>
-            
-            <form>
-                <label>Departure Address</label>
-                <input type="text" placeholder="Departure Address" required />
+  return (
+    <div>
+      <h1>Swopp</h1>
+      <p>Welcome, {user?.name}!</p>
+      <p>ORDER REGISTRATION</p>
 
-                <label>Destination Address</label>
-                <input type="text" placeholder="Destination Address" required />
+      <form>
+        <label>Departure Address</label>
+        <input type="text" placeholder="Departure Address" required />
 
-                <label>Date & Time</label>
-                <input type="datetime-local" required />
+        <label>Destination Address</label>
+        <input type="text" placeholder="Destination Address" required />
 
-                <button type="submit">Swopp away!</button>
-            </form>
-      </div>
+        <label>Date & Time</label>
+        <input type="datetime-local" required />
 
-        {/* Navigation Bar */}
-      <NavBar />
+        <button type="submit">Swopp away!</button>
+      </form>
+
+      {/* Navigation Bar */}
+      <BottomNavBar />
     </div>
   );
 };
 
-export default HomePage;
+export default Order;
