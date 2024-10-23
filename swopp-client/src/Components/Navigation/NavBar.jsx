@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './NavBar.css'; // We will add styles here later
 
-const BottomNavBar = () => {
+const NavBar = () => {
   return (
     <nav className="bottom-nav">
       <Link to="/home" className="nav-link">Home</Link> {/* Home Tab */}
@@ -11,4 +11,4 @@ const BottomNavBar = () => {
   );
 };
 
-export default BottomNavBar;
+export default NavBar;
