@@ -28,6 +28,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Register the UserRepository with Dependency Injection
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRequestRepository, RequestRepository>();
+
 
 // Add CORS configuration
 builder.Services.AddCors(options =>

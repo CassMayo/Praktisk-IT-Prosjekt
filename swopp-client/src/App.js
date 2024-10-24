@@ -7,6 +7,7 @@ import Order from "./Components/Order/Order";
 import UserPage from "./Components/UserPage/UserPage";
 import HomePage from './Components/Home/HomePage';
 import NavBar from './Components/Navigation/NavBar';
+import ProductDetails from "./Components/Order/ProductDetails/ProductDetails";
 
 
 const App = () => {
@@ -19,6 +20,7 @@ const App = () => {
         <Route path="/order" element={<Order />} />
         <Route path="/user" element={<UserPage />} />
         <Route path="/home" element={<HomePage />} /> {/* Home page after login */}
+        <Route path="/product-details" element={<ProductDetails />} />
       </Routes>
     </Router>
   );
