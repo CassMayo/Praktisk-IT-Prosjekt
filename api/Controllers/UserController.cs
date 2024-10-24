@@ -130,14 +130,16 @@ namespace api.Controllers
         [HttpGet("profile")]
         public async Task<IActionResult> GetUserProfile()
         {
-            try{
+            try
+            {
                 //Extract email from the "JWT" Token's 'sub' claim
                 var email = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
-                if(email == null){
+                if (email == null)
+                {
                     return Unauthorized(new { message = "Unauthorized" });
                 }
                 //fetch the user details from the repository
-                        // kode her...
+                // kode her...
                 var user = await _userRepository.GetUserByEmailAsync(email);
                 if (user == null)
                 {
@@ -145,24 +147,43 @@ namespace api.Controllers
                 }
 
                 //Return the User's profile details
-                        // kode her...
-                var userProfile = new 
+                // kode her...
+                var userProfile = new
                 {
                     Name = user.Name,
                     Email = user.Email
-                
+
                 };
 
                 return Ok(userProfile);
-     
+
             }
-            catch (Exception ex){
+            catch (Exception ex)
+            {
                 _logger.LogError(ex, "An error occurred while fetching user profile");
                 return StatusCode(500, new { message = "An internal server error occurred. Please try again later." });
             }
         }
-        
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            try
+            {
+                // Fetch all users from the database
+                var users = await _userRepository.GetAllUsersAsync();
 
-        
+                // Return the list of users
+                return Ok(users);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while fetching all users");
+                return StatusCode(500, new { message = "An internal server error occurred. Please try again later." });
+            }
+        }
+
+
+
+
     }
 }

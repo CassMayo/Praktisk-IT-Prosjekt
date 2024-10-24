@@ -1,4 +1,5 @@
 using api.DAL.Models;
+using api.DAL;
 using api.DAL.Interfaces;
 using api.DAL.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -7,6 +8,7 @@ using Serilog.Events;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -72,6 +74,7 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    DBInit.Seed(app);  
     app.UseDeveloperExceptionPage();
     app.UseSwagger();
     app.UseSwaggerUI();
