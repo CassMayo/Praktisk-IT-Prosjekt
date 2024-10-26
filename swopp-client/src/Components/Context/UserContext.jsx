@@ -1,69 +1,60 @@
 import React, { createContext, useState, useEffect } from "react";
 
-// Create the UserContext
 export const UserContext = createContext();
 
-// Create the UserProvider component
 export const UserProvider = ({ children }) => {
-  const [user, setUser] = useState(null); // Store user information (name, email, etc.)
-  const [token, setToken] = useState(null); // Store JWT token
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true); // Add loading state
 
-  // Function to log in the user and store their information and token
-    //If we want to centralized it later
-  const login = (userData, Token) => {
+  const login = (userData, token) => {
     setUser(userData);
     setToken(token);
-    localStorage.setItem("token", Token);
+    localStorage.setItem("token", token);
   };
-  
-  // Function to log out the user and clear their data
-        //if we want
+
   const logout = () => {
     setUser(null);
     setToken(null);
     localStorage.removeItem("token");
   };
 
-    
+  const fetchUserProfile = async (authToken) => {
+    try {
+      const response = await fetch("http://localhost:5078/api/user/profile", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+        },
+      });
 
-  // Function to fetch user profile from the server using the stored token
-      //SKRIV KODE HER:
-    const fetchUserProfile = async () => {
-      if (!token) return; // Make sure a token is available
-    
-      try {
-        const response = await fetch("/api/user/profile", {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`, // Send the token in the Authorization header
-          },
-        });
-    
-        if (response.ok) {
-          const userData = await response.json();
-          setUser(userData); // Update user data in state
-         } else {
-          console.error("Failed to fetch user profile");
-         }
-       } catch (error) {
-         console.error("Error fetching user profile:", error);
+      if (response.ok) {
+        const userData = await response.json();
+        setUser(userData);
+      } else {
+        console.error("Failed to fetch user profile");
+        logout(); // Clear invalid session
       }
-     };
-
-  // Effect to load the token from localStorage when the app loads
-        //SKRIV KODE HER:
+    } catch (error) {
+      console.error("Error fetching user profile:", error);
+      logout(); // Clear invalid session
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
     const savedToken = localStorage.getItem("token");
     if (savedToken) {
       setToken(savedToken);
-      fetchUserProfile(); // Fetch user data after setting the token
+      fetchUserProfile(savedToken);
+    } else {
+      setLoading(false);
     }
-  }, [token]); // Re-run if the token changes
-
+  }, []); // Remove token dependency to prevent infinite loop
 
   return (
-    <UserContext.Provider value={{ user, setUser, token, setToken, login, logout }}>
+    <UserContext.Provider value={{ user, token, loading, login, logout }}>
       {children}
     </UserContext.Provider>
   );

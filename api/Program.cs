@@ -6,6 +6,7 @@ using Serilog;
 using Serilog.Events;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authorization;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -57,9 +58,29 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+// Configure Authorization
+builder.Services.AddAuthorization(options =>
+{
+    // Default policy - requires authenticated user
+    options.DefaultPolicy = new AuthorizationPolicyBuilder()
+        .RequireAuthenticatedUser()
+        .Build();
+
+    // User policy
+    options.AddPolicy("RequireUserRole", policy =>
+        policy.RequireClaim("Role", "User"));
+
+    // Admin policy
+    options.AddPolicy("RequireAdminRole", policy =>
+        policy.RequireClaim("Role", "Admin"));
+});
+
+// Register authorization handlers
+builder.Services.AddScoped<IAuthorizationHandler, RoleHandler>();
+
 // Serilog configuration for logging
 var loggerConfiguration = new LoggerConfiguration()
-    .MinimumLevel.Information() // levels: Trace < Information < Warning < Error < Fatal
+    .MinimumLevel.Information()
     .WriteTo.File($"APILogs/app_{DateTime.Now:yyyyMMdd_HHmmss}.log")
     .Filter.ByExcluding(e => e.Properties.TryGetValue("SourceContext", out var value) &&
                             e.Level == LogEventLevel.Information &&
@@ -81,9 +102,9 @@ app.UseStaticFiles();
 app.UseRouting();
 app.UseCors("CorsPolicy");
 
-// Add the Authentication and Authorization middlewares
-app.UseAuthentication();  // <-- Add this
-app.UseAuthorization();   // <-- Add this
+// Authentication & Authorization middleware
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllerRoute(name: "api", pattern: "{controller}/{action=Index}/{id?}");
 

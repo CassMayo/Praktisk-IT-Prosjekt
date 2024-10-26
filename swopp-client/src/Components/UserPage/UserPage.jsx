@@ -1,22 +1,26 @@
 import React, { useContext } from "react";
 import { UserContext } from "../Context/UserContext";
 
-    const UserPage = () => {
-        const { user } = useContext(UserContext); //Access user and token from context  
-        console.log("User data in Order component:", user); 
+const UserPage = () => {
+  const { user } = useContext(UserContext);
 
-        return (
-            <div>
-                <div>
-            <h1>Swopp</h1>
-            <p>{user.name}!</p>
-            </div>
-            <div>
-            <h2>Your Orders</h2>
-            <p>Order 1</p>
-            </div>
-            </div>
-        );
-        }
+  if (!user) {
+    return <div>Loading user data...</div>;
+  }
 
-    export default UserPage;
+  return (
+    <div>
+      <div>
+        <h1>Swopp</h1>
+        <p>Welcome, {user.name}!</p>
+        <p>Email: {user.email}</p>
+      </div>
+      <div>
+        <h2>Your Orders</h2>
+        <p>Order 1</p>
+      </div>
+    </div>
+  );
+};
+
+export default UserPage;
