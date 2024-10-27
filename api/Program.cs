@@ -27,12 +27,17 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Register the UserRepository with Dependency Injection
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IRequestRepository, RequestRepository>();
+builder.Services.AddScoped<IItemRepository, ItemRepository>();
 
 // Add CORS configuration
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("CorsPolicy",
-        builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+        builder => builder
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader());
 });
 
 // Configure JWT Authentication
@@ -101,8 +106,6 @@ if (app.Environment.IsDevelopment())
 app.UseStaticFiles();
 app.UseRouting();
 app.UseCors("CorsPolicy");
-
-// Authentication & Authorization middleware
 app.UseAuthentication();
 app.UseAuthorization();
 
