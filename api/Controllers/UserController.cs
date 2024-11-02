@@ -118,7 +118,7 @@ namespace api.Controllers
         new Claim(JwtRegisteredClaimNames.Sub, user.Email),
         new Claim(JwtRegisteredClaimNames.Email, user.Email),
         new Claim(ClaimTypes.Name, user.Name),
-        new Claim("Role", "User")  // You can modify this based on your user roles
+        new Claim(ClaimTypes.Role, "User")  // You can modify this based on your user roles
     };
 
             var token = new JwtSecurityToken(

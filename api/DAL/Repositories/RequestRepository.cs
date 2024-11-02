@@ -2,10 +2,9 @@ using api.DAL.Interfaces;
 using api.DAL.Models;
 using api.DAL.Enum;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
+namespace api.DAL.Repositories
+{ 
     public class RequestRepository : IRequestRepository
     {
         private readonly AppDbContext _context;
@@ -100,3 +99,4 @@ using System.Threading.Tasks;
             return true;
         }
     }
+}

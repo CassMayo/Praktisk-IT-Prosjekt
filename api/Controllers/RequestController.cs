@@ -4,6 +4,7 @@ using api.DAL.Interfaces;
 using api.DAL.Enum;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace api.Controllers
 {
@@ -34,7 +35,13 @@ namespace api.Controllers
 
             try
             {
-                var user = await _userRepository.GetUserByEmailAsync(requestDTO.SenderEmail);
+                var email = User.FindFirst(ClaimTypes.Email)?.Value;
+                if (email == null)
+                {
+                    return Unauthorized(new { message = "Unauthorized." });
+                }
+
+                var user = await _userRepository.GetUserByEmailAsync(email);
                 if (user == null)
                 {
                     return NotFound(new { message = "Sender not found." });
@@ -42,7 +49,7 @@ namespace api.Controllers
 
                 var request = new Request
                 {
-                    SenderEmail = requestDTO.SenderEmail,
+                    SenderEmail = email,
                     PickupLocation = requestDTO.PickupLocation,
                     DropoffLocation = requestDTO.DropoffLocation,
                     Description = requestDTO.Description,
