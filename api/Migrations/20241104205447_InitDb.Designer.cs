@@ -11,7 +11,7 @@ using api.DAL.Models;
 namespace api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240929202059_InitDb")]
+    [Migration("20241104205447_InitDb")]
     partial class InitDb
     {
         /// <inheritdoc />
