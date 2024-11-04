@@ -10,7 +10,6 @@ namespace api.Controllers
 {
     [ApiController]
     [Route("api/[controller]")]
-    [Authorize]
     public class RequestController : ControllerBase
     {
         private readonly IRequestRepository _requestRepository;
@@ -28,6 +27,7 @@ namespace api.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> CreateRequest([FromBody] CreateRequestDTO requestDTO)
         {
             if (!ModelState.IsValid)
@@ -78,6 +78,7 @@ namespace api.Controllers
                 return StatusCode(500, new { message = "An error occurred while creating the request." });
             }
         }
+        
         [HttpGet("user/{email}")]
         public async Task<IActionResult> GetUserRequests(string email)
         {
@@ -110,38 +111,19 @@ namespace api.Controllers
                 return StatusCode(500, new { message = "An error occurred while fetching the request." });
             }
         }
-
-        [HttpPut("{id}/status")]
-        public async Task<IActionResult> UpdateRequestStatus(int id, [FromBody] UpdateRequestStatusDTO statusDTO)
+    
+        // search with query parameters
+        [HttpGet("search")]
+        public async Task<IActionResult> SearchRequests([FromQuery] RequestQuery query)
         {
             try
             {
-                var updatedRequest = await _requestRepository.UpdateRequestStatusAsync(id, statusDTO.Status);
-                return Ok(updatedRequest);
-            }
-            catch (KeyNotFoundException)
-            {
-                return NotFound(new { message = "Request not found." });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error updating status for request {RequestId}", id);
-                return StatusCode(500, new { message = "An error occurred while updating the request status." });
-            }
-        }
-        
-        [HttpGet]
-        [AllowAnonymous]
-        public async Task<IActionResult> GetAllRequests()
-        {
-            try
-            {
-                var requests = await _requestRepository.GetAllRequestsAsync();
+                var requests = await _requestRepository.GetRequestsByQueryAsync(query);
                 return Ok(requests);
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error fetching all requests");
+                _logger.LogError(ex, "Error fetching requests with query {Query}", query);
                 return StatusCode(500, new { message = "An error occurred while fetching requests." });
             }
         }
