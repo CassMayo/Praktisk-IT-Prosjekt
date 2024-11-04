@@ -118,8 +118,8 @@ namespace api.Controllers
         {
             try
             {
-                var requests = await _requestRepository.GetRequestsByQueryAsync(query);
-                return Ok(requests);
+                var filteredRequests = await _requestRepository.GetRequestsByQueryAsync(query);
+                return Ok(filteredRequests);
             }
             catch (Exception ex)
             {

@@ -4,6 +4,7 @@ using api.DAL.Enum;
 using Microsoft.EntityFrameworkCore;
 using api.DAL.DTOs.Request;
 
+
 namespace api.DAL.Repositories
 { 
     public class RequestRepository : IRequestRepository
@@ -38,45 +39,33 @@ namespace api.DAL.Repositories
         use the query object to filter the requests
         show max 10 requests per page
         */
-        public async Task<IEnumerable<Request>> GetRequestsByQueryAsync(RequestQuery query)
+        public async Task<IEnumerable<FilteredRequestDTO>> GetRequestsByQueryAsync(RequestQuery query)
         {
             var requests = _context.Requests.AsQueryable();
 
-            // Filter by SenderEmail
+            // Existing filters...
             if (!string.IsNullOrEmpty(query.SenderEmail))
             {
                 requests = requests.Where(r => r.SenderEmail == query.SenderEmail);
             }
-
-            // Filter by PickupLocation
             if (!string.IsNullOrEmpty(query.PickupLocation))
             {
                 requests = requests.Where(r => r.PickupLocation.Contains(query.PickupLocation));
             }
-
-            // Filter by DropoffLocation
             if (!string.IsNullOrEmpty(query.DropoffLocation))
             {
                 requests = requests.Where(r => r.DropoffLocation.Contains(query.DropoffLocation));
             }
-
-            // Filter by ScheduledAt date
             if (query.ScheduledAt.HasValue)
             {
                 requests = requests.Where(r => r.ScheduledAt.Value.Date == query.ScheduledAt.Value.Date);
             }
-
-            // Filter by CreatedAt date
-            if (query.CreatedAt.HasValue)
+            if (query.Status.HasValue)
             {
-                requests = requests.Where(r => r.CreatedAt.Date == query.CreatedAt.Value.Date);
+                requests = requests.Where(r => r.Status == query.Status.Value);
             }
-
-            // Filter by Description
-            if (!string.IsNullOrEmpty(query.Description))
-            {
-                requests = requests.Where(r => r.Description.Contains(query.Description));
-            }
+            // Filter out requests that already have a driver
+            requests = requests.Where(r => r.DriverEmail == null);
 
             // Implement pagination
             int pageSize = 10;
@@ -84,9 +73,18 @@ namespace api.DAL.Repositories
 
             return await requests
                 .Include(r => r.Sender)
-                .Include(r => r.Driver)
                 .Skip((pageNumber - 1) * pageSize)
                 .Take(pageSize)
+                .Select(r => new FilteredRequestDTO
+                {
+                    RequestId = r.RequestId,
+                    SenderEmail = r.SenderEmail,
+                    PickupLocation = r.PickupLocation,
+                    DropoffLocation = r.DropoffLocation,
+                    Description = r.Description, // Include Description
+                    ScheduledAt = r.ScheduledAt ?? DateTime.MinValue,
+                    CreatedAt = r.CreatedAt
+                })
                 .ToListAsync();
         }
 

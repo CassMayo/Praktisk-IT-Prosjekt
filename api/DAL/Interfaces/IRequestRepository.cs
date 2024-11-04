@@ -8,7 +8,7 @@ namespace api.DAL.Interfaces
     {
         Task<IEnumerable<Request>> GetRequestsBySenderAsync(string senderEmail);
         Task<IEnumerable<Request>> GetRequestsByDriverAsync(string driverEmail);
-        Task<IEnumerable<Request>> GetRequestsByQueryAsync(RequestQuery query);
+        Task<IEnumerable<FilteredRequestDTO>> GetRequestsByQueryAsync(RequestQuery query);
         Task<Request?> GetRequestByIdAsync(int requestId);
         Task<Request> CreateRequestAsync(Request request);
         Task<Request> UpdateRequestStatusAsync(int requestId, RequestStatus newStatus);
