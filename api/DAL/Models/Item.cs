@@ -9,7 +9,7 @@ namespace api.DAL.Models
         [Key]
         public int ItemId { get; set; }  // Primary Key
 
-        [ForeignKey("Request")]
+        [ForeignKey("Request")] // Foreign Key to Request
         public required int RequestId { get; set; }  // Foreign Key to Request
 
         public required string ItemName { get; set; }  // Required name of the item

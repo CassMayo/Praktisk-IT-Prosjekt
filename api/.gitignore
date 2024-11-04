@@ -19,3 +19,6 @@ APILogs/
 # Ignore other specific generated files
 .vs/
 *.csproj.user
+
+# IDK BROO dont diss me
+package-lock.json

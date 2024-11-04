@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace api.Controllers
 {
@@ -27,6 +28,7 @@ namespace api.Controllers
         }
 
         [HttpPost("register")]
+        [AllowAnonymous]
         public async Task<IActionResult> Register([FromBody] UserRegistrationDTO registrationDTO)
         {
             _logger.LogInformation("Starting registration process for {Email}", registrationDTO.Email);
@@ -66,6 +68,7 @@ namespace api.Controllers
         }
 
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] UserLoginDTO loginDTO)
         {
             _logger.LogInformation("Starting login process for {Email}", loginDTO.Email);
@@ -112,8 +115,11 @@ namespace api.Controllers
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-            };
+        new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+        new Claim(JwtRegisteredClaimNames.Email, user.Email),
+        new Claim(ClaimTypes.Name, user.Name),
+        new Claim(ClaimTypes.Role, "User")  // You can modify this based on your user roles
+    };
 
             var token = new JwtSecurityToken(
                 issuer: jwtSettings["Issuer"],
@@ -125,19 +131,21 @@ namespace api.Controllers
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-
         //Get User profile
         [HttpGet("profile")]
+        [Authorize]
         public async Task<IActionResult> GetUserProfile()
         {
-            try{
+            try
+            {
                 //Extract email from the "JWT" Token's 'sub' claim
                 var email = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
-                if(email == null){
+                if (email == null)
+                {
                     return Unauthorized(new { message = "Unauthorized" });
                 }
                 //fetch the user details from the repository
-                        // kode her...
+                // kode her...
                 var user = await _userRepository.GetUserByEmailAsync(email);
                 if (user == null)
                 {
@@ -145,24 +153,28 @@ namespace api.Controllers
                 }
 
                 //Return the User's profile details
-                        // kode her...
-                var userProfile = new 
+                // kode her...
+                var userProfile = new
                 {
                     Name = user.Name,
                     Email = user.Email
-                
+
                 };
 
                 return Ok(userProfile);
-     
+
             }
-            catch (Exception ex){
+            catch (Exception ex)
+            {
                 _logger.LogError(ex, "An error occurred while fetching user profile");
                 return StatusCode(500, new { message = "An internal server error occurred. Please try again later." });
             }
         }
-        
-
-        
+        [HttpGet("admin-dashboard")]
+        [Authorize(Policy = "RequireAdminRole")]
+        public IActionResult AdminDashboard()
+        {
+            return Ok(new { message = "Welcome to admin dashboard" });
+        }
     }
 }
