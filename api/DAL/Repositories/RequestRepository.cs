@@ -64,6 +64,16 @@ namespace api.DAL.Repositories
             {
                 requests = requests.Where(r => r.Status == query.Status.Value);
             }
+
+            if (!string.IsNullOrEmpty(query.SearchTerm))
+            {
+                var searchTerm = query.SearchTerm.ToLower();
+                requests = requests.Where(r => 
+                    r.PickupLocation.ToLower().Contains(searchTerm) ||
+                    r.DropoffLocation.ToLower().Contains(searchTerm) ||
+                    r.Description.ToLower().Contains(searchTerm));
+            }
+
             // Filter out requests that already have a driver
             requests = requests.Where(r => r.DriverEmail == null);
 

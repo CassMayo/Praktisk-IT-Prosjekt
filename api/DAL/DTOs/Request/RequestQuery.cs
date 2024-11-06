@@ -9,8 +9,8 @@ namespace api.DAL.DTOs.Request
         public string? DropoffLocation { get; set; }
         public DateTime? ScheduledAt { get; set; }
         public DateTime? CreatedAt { get; set; }
-        public string? Description { get; set; }
         public int Page { get; set; } = 1;
         public RequestStatus? Status { get; set; } // Added Status
+        public string? SearchTerm { get; set; } // Added SearchTerm
     }
 }
