@@ -2,31 +2,36 @@ import React, { useContext } from "react";
 import { UserContext } from "../Context/UserContext";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../Navigation/NavBar";
+import './UserPage.css'; // Import the new UserPage.css for styling
 
 const UserPage = () => {
     const { user } = useContext(UserContext);
     const navigate = useNavigate();
 
     return (
-        <div>
-            {/* Navigation Bar */}
+        <>
             <NavBar />
-            <div className="container mx-auto p-4">
-                <div className="mb-8">
-                    <h1 className="text-3xl font-bold">Swopp</h1>
-                    <p className="text-xl">Welcome, {user?.name}!</p>
+            <div className="userpage-container">
+                <div className="profile-section">
+                    <img src={user?.profilePicture} alt={user?.name} className="profile-picture" />
+                    <p className="profile-name"> Profile Name: {user?.name}</p>
+                    <p className="profile-email"> Email: {user?.email}</p>
                 </div>
-                <div className="flex justify-between items-center mb-6">
-                    <h2 className="text-2xl font-semibold">Your Orders</h2>
-                    <button 
-                        onClick={() => navigate('/order')}
-                        className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
-                        Create New Order
-                    </button>
-        
+                <div className="orders-section">
+                    <div className="orders-header">
+                        <h2 className="orders-title">Your Orders</h2>
+                        <button 
+                            onClick={() => navigate('/order')}
+                            className="btn-button">
+                            Create New Order
+                        </button>
+                    </div>
+                    <div className="orders-list">
+                        {/* Render user's orders here */}
+                    </div>
                 </div>
             </div>
-        </div>
+        </>
     );
 };
 

@@ -1,0 +1,106 @@
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    padding: 20px;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+  
+  .userpage-container {
+    display: flex;
+    height: calc(100vh - 50px); /* Full height of the viewport minus the height of the navbar */
+    width: 100%; /* Full width of the viewport */
+    padding-top: 20px; /* Add top padding to prevent overlap with the navbar */
+
+  }
+
+  .profile-section {
+    flex: 1;
+    background-color: var(--secondary-background-color);
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    overflow-y: auto; /* Allow scrolling if content overflows */
+  }
+  
+  .profile-picture {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 20px;
+    font-size: 24px;
+    font-weight: bold;
+  }
+  
+  .profile-name {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #000000;
+  }
+  
+  .profile-email {
+    font-size: 16px;
+    font-weight: bold;
+    color: #202020;
+  }
+  
+  .orders-section {
+    flex: 1;
+    background-color: var(--main-background-color);
+    padding: 20px;
+    overflow-y: auto; /* Allow scrolling if content overflows */
+  }
+  
+  .orders-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  
+  .orders-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #fff;
+  }
+  
+  .btn-button {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    color: rgb(0, 0, 0);
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    font-weight: bold;
+  }
+  
+  .create-order-button:hover {
+    background-color: #0056b3;
+  }
+  
+  @media (max-width: 768px) {
+    .userpage-container {
+      flex-direction: column;
+      padding-top: 70px; /* Adjust padding for smaller screens */
+    }
+  
+    .profile-section {
+      flex: 0 0 auto; /* Allow the profile section to adjust its height */
+      width: 100%; /* Full width on smaller screens */
+      margin-bottom: 20px; /* Add margin to separate sections */
+    }
+  
+    .orders-section {
+      flex: 1;
+      width: 100%; /* Full width on smaller screens */
+    }
+  }
+
+  
