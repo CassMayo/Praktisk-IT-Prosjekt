@@ -127,5 +127,34 @@ namespace api.Controllers
                 return StatusCode(500, new { message = "An error occurred while fetching requests." });
             }
         }
+
+        // update request
+        [HttpPost("{id}")]
+        [Authorize]
+        public async Task<IActionResult> UpdateRequest(int id, [FromBody] UpdateRequestDTO requestDTO)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                var request = await _requestRepository.GetRequestByIdAsync(id);
+                if (request == null)
+                    return NotFound(new { message = "Request not found." });
+
+                request.PickupLocation = requestDTO.PickupLocation;
+                request.DropoffLocation = requestDTO.DropoffLocation;
+                request.Description = requestDTO.Description;
+                request.ScheduledAt = requestDTO.ScheduledAt;
+
+                var updatedRequest = await _requestRepository.UpdateRequestAsync(request);
+                return Ok(updatedRequest);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating request {RequestId}", id);
+                return StatusCode(500, new { message = "An error occurred while updating the request." });
+            }
+        }
     }
 }

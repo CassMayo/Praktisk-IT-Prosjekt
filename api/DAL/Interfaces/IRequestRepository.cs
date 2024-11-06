@@ -11,6 +11,7 @@ namespace api.DAL.Interfaces
         Task<IEnumerable<FilteredRequestDTO>> GetRequestsByQueryAsync(RequestQuery query);
         Task<Request?> GetRequestByIdAsync(int requestId);
         Task<Request> CreateRequestAsync(Request request);
+        Task<Request> UpdateRequestAsync(Request request);
         Task<Request> UpdateRequestStatusAsync(int requestId, RequestStatus newStatus);
         Task<Request> AssignDriverToRequestAsync(int requestId, string driverEmail);
         Task<bool> DeleteRequestAsync(int requestId);

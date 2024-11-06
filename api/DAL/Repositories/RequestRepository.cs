@@ -113,6 +113,13 @@ namespace api.DAL.Repositories
             return request;
         }
 
+        public async Task<Request> UpdateRequestAsync(Request request)
+        {
+            _context.Requests.Update(request);
+            await _context.SaveChangesAsync();
+            return request;
+        }
+
         public async Task<Request> UpdateRequestStatusAsync(int requestId, RequestStatus newStatus)
         {
             var request = await _context.Requests.FindAsync(requestId);
