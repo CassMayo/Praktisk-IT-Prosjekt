@@ -85,6 +85,31 @@ body, #root {
   .create-order-button:hover {
     background-color: #0056b3;
   }
+
+  .orders-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Space between each order */
+  }
+  
+  .order {
+    display: flex;
+    flex-direction: column;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .order h3 {
+    margin: 0 0 10px;
+  }
+  
+  .order p {
+    margin: 5px 0;
+  }
   
   @media (max-width: 768px) {
     .userpage-container {
