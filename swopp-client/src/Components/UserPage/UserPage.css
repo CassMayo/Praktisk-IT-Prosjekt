@@ -1,23 +1,23 @@
-body {
+body, #root {
     margin: 0;
     padding: 0;
     height: 100%;
-    padding: 20px;
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
+    width: 100%;
   }
   
   .userpage-container {
     display: flex;
-    height: calc(100vh - 50px); /* Full height of the viewport minus the height of the navbar */
+    height: 100vh; /* Full height of the viewport */
     width: 100%; /* Full width of the viewport */
-    padding-top: 20px; /* Add top padding to prevent overlap with the navbar */
-
+    padding-top: 50px; /* Add top padding to prevent overlap with the navbar */
   }
 
   .profile-section {
-    flex: 1;
+    flex: 0 0 30%;;
+    width: 100%;
     background-color: var(--secondary-background-color);
     padding: 20px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -33,6 +33,7 @@ body {
     margin-bottom: 20px;
     font-size: 24px;
     font-weight: bold;
+    margin-top: 20px;
   }
   
   .profile-name {

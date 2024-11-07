@@ -28,6 +28,8 @@ h2 {
 .main-container {
   display: flex;
   justify-content: center;
+  align-items: flex-start;
+  margin: 50px auto;
   flex-direction: column;
   flex-direction: row;
   max-width: 90%; /* Increase the max-width to make the form wider */
@@ -44,6 +46,7 @@ h2 {
   font-size: 14px;
   color: #333;
   width: 250px; /* Fixed width for the debug info box */
+  margin-top: 120px;
 }
 
 /* Form container styling */
