@@ -2,6 +2,8 @@ using api.DAL.Interfaces;
 using api.DAL.Models;
 using api.DAL.Enum;
 using Microsoft.EntityFrameworkCore;
+using api.DAL.DTOs.Request;
+
 
 namespace api.DAL.Repositories
 { 
@@ -14,14 +16,6 @@ namespace api.DAL.Repositories
         {
             _context = context;
             _logger = logger;
-        }
-
-        public async Task<IEnumerable<Request>> GetAllRequestsAsync()
-        {
-            return await _context.Requests
-                .Include(r => r.Sender)
-                .Include(r => r.Driver)
-                .ToListAsync();
         }
 
         public async Task<IEnumerable<Request>> GetRequestsBySenderAsync(string senderEmail)
@@ -40,11 +34,67 @@ namespace api.DAL.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Request>> GetPendingRequestsAsync()
+        // Get request by query
+        /*
+        use the query object to filter the requests
+        show max 10 requests per page
+        */
+        public async Task<IEnumerable<FilteredRequestDTO>> GetRequestsByQueryAsync(RequestQuery query)
         {
-            return await _context.Requests
+            var requests = _context.Requests.AsQueryable();
+
+            // Existing filters...
+            if (!string.IsNullOrEmpty(query.SenderEmail))
+            {
+                requests = requests.Where(r => r.SenderEmail == query.SenderEmail);
+            }
+            if (!string.IsNullOrEmpty(query.PickupLocation))
+            {
+                requests = requests.Where(r => r.PickupLocation.Contains(query.PickupLocation));
+            }
+            if (!string.IsNullOrEmpty(query.DropoffLocation))
+            {
+                requests = requests.Where(r => r.DropoffLocation.Contains(query.DropoffLocation));
+            }
+            if (query.ScheduledAt.HasValue)
+            {
+                requests = requests.Where(r => r.ScheduledAt.Value.Date == query.ScheduledAt.Value.Date);
+            }
+            if (query.Status.HasValue)
+            {
+                requests = requests.Where(r => r.Status == query.Status.Value);
+            }
+
+            if (!string.IsNullOrEmpty(query.SearchTerm))
+            {
+                var searchTerm = query.SearchTerm.ToLower();
+                requests = requests.Where(r => 
+                    r.PickupLocation.ToLower().Contains(searchTerm) ||
+                    r.DropoffLocation.ToLower().Contains(searchTerm) ||
+                    r.Description.ToLower().Contains(searchTerm));
+            }
+
+            // Filter out requests that already have a driver
+            requests = requests.Where(r => r.DriverEmail == null);
+
+            // Implement pagination
+            int pageSize = 10;
+            int pageNumber = query.Page > 0 ? query.Page : 1;
+
+            return await requests
                 .Include(r => r.Sender)
-                .Where(r => r.Status == RequestStatus.Pending)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(r => new FilteredRequestDTO
+                {
+                    RequestId = r.RequestId,
+                    SenderEmail = r.SenderEmail,
+                    PickupLocation = r.PickupLocation,
+                    DropoffLocation = r.DropoffLocation,
+                    Description = r.Description, // Include Description
+                    ScheduledAt = r.ScheduledAt ?? DateTime.MinValue,
+                    CreatedAt = r.CreatedAt
+                })
                 .ToListAsync();
         }
 
