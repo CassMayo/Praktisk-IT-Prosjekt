@@ -50,6 +50,32 @@ namespace api
             "Going to {0}, require transportation.",
             "Destination {0}, need a ride."
         };
+
+        private static readonly string[] itemNames = {
+            "Laptop",
+            "Chair",
+            "Book",
+            "Bicycle",
+            "Table",
+            "Smartphone",
+            "Headphones",
+            "Backpack",
+            "Camera",
+            "Watch"
+        };
+
+        private static readonly string[] itemDescriptions = {
+            "A brand new {0}",
+            "Slightly used {0} in good condition",
+            "Old {0} needing repair",
+            "Limited edition {0}",
+            "Custom-made {0} with unique design",
+            "High-performance {0}",
+            "Lightweight {0} ideal for travel",
+            "Durable {0} made of premium materials",
+            "Vintage {0} from the 80s",
+            "Affordable {0} with basic features"
+        };
         
         public static void Initialize(IServiceProvider serviceProvider)
         {
@@ -145,15 +171,19 @@ namespace api
                 int itemCount = random.Next(2, 6);
                 for (int i = 0; i < itemCount; i++)
                 {
+                    var itemName = itemNames[random.Next(itemNames.Length)];
+                    var descriptionTemplate = itemDescriptions[random.Next(itemDescriptions.Length)];
+                    var description = string.Format(descriptionTemplate, itemName);
+
                     var item = new Item
                     {
                         Request = request,
                         RequestId = request.RequestId,
-                        ItemName = $"Item {i + 1}",
+                        ItemName = itemName,
                         ItemType = (ItemType)random.Next(0, 5),
-                        Description = "Random item description",
+                        Description = description,
                         Price = (float)random.NextDouble() * 100,
-                        Image = $"https://example.com/images/item{i + 1}.jpg",
+                        Image = $"https://example.com/images/{itemName.Replace(" ", "").ToLower()}{i + 1}.jpg",
                         Width = random.Next(1, 100),
                         Height = random.Next(1, 100),
                         Depth = random.Next(1, 100)
