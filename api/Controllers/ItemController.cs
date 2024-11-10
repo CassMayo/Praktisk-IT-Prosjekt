@@ -4,6 +4,7 @@ using api.DAL.Interfaces;
 using api.DAL.Enum;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace api.Controllers
 {
@@ -26,7 +27,7 @@ namespace api.Controllers
         }
 
         [HttpPost]
-            [Authorize]
+        [Authorize]
         public async Task<IActionResult> CreateItem([FromBody] CreateItemDTO itemDTO)
         {
             _logger.LogInformation("Attempting to create item for request {RequestId}", itemDTO.RequestId);
@@ -45,6 +46,14 @@ namespace api.Controllers
                 {
                     _logger.LogWarning("Request {RequestId} not found", itemDTO.RequestId);
                     return NotFound(new { message = "Request not found." });
+                }
+
+                // Verify that the request is owned by the user
+                var email = User.FindFirst(ClaimTypes.Email)?.Value;
+                if (request.SenderEmail != email)
+                {
+                    _logger.LogWarning("User {UserEmail} does not own request {RequestId}", email, itemDTO.RequestId);
+                    return Unauthorized(new { message = "You do not have permission to create an item for this request." });
                 }
 
                 var item = new Item
@@ -100,6 +109,79 @@ namespace api.Controllers
             {
                 _logger.LogError(ex, "Error fetching item {ItemId}", id);
                 return StatusCode(500, new { message = "An error occurred while fetching the item." });
+            }
+        }
+
+        [HttpPut("{id}")]
+        [Authorize]
+        public async Task<IActionResult> UpdateItem(int id, [FromBody] UpdateItemDTO itemDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                _logger.LogWarning("Invalid model state for item update");
+                return BadRequest(ModelState);
+            }
+            
+            try
+            {
+                var item = await _itemRepository.GetItemByIdAsync(id);
+                if (item == null)
+                    return NotFound(new { message = "Item not found." });
+
+                // Verify that the request is owned by the user
+                var email = User.FindFirst(ClaimTypes.Email)?.Value;
+                if (item.Request.SenderEmail != email)
+                {
+                    _logger.LogWarning("User {UserEmail} does not own request {RequestId}", email, item.RequestId);
+                    return Unauthorized(new { message = "You do not have permission to update this item." });
+                }
+
+                item.ItemName = itemDTO.ItemName;
+                item.ItemType = itemDTO.ItemType;
+                item.Description = itemDTO.Description;
+                item.Price = itemDTO.Price;
+
+                var updatedItem = await _itemRepository.UpdateItemAsync(item);
+                _logger.LogInformation("Successfully updated item {ItemId}", id);
+
+                return Ok(updatedItem);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating item {ItemId}", id);
+                return StatusCode(500, new { message = "An error occurred while updating the item." });
+            }
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteItem(int id)
+        {
+            try
+            {
+                var item = await _itemRepository.GetItemByIdAsync(id);
+                if (item == null)
+                    return NotFound(new { message = "Item not found." });
+
+                // Verify that the request is owned by the user
+                var email = User.FindFirst(ClaimTypes.Email)?.Value;
+                if (item.Request.SenderEmail != email)
+                {
+                    _logger.LogWarning("User {UserEmail} does not own request {RequestId}", email, item.RequestId);
+                    return Unauthorized(new { message = "You do not have permission to delete this item." });
+                }
+
+                var deleted = await _itemRepository.DeleteItemAsync(id);
+                if (!deleted)
+                    return StatusCode(500, new { message = "An error occurred while deleting the item." });
+
+                _logger.LogInformation("Successfully deleted item {ItemId}", id);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting item {ItemId}", id);
+                return StatusCode(500, new { message = "An error occurred while deleting the item." });
             }
         }
     }

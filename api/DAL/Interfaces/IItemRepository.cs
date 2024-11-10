@@ -9,6 +9,5 @@ namespace api.DAL.Interfaces
         Task<Item> CreateItemAsync(Item item);
         Task<Item> UpdateItemAsync(Item item);
         Task<bool> DeleteItemAsync(int itemId);
-        Task<bool> DeleteItemsByRequestIdAsync(int requestId);
     }
 }

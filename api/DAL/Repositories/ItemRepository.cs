@@ -46,20 +46,6 @@ namespace api.DAL.Repositories
             return true;
         }
 
-        public async Task<bool> DeleteItemsByRequestIdAsync(int requestId)
-        {
-            var items = await _context.Items
-                .Where(i => i.RequestId == requestId)
-                .ToListAsync();
-
-            if (!items.Any())
-                return false;
-
-            _context.Items.RemoveRange(items);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
         public async Task<Item> UpdateItemAsync(Item item)
         {
             _context.Items.Update(item);

@@ -57,23 +57,29 @@ namespace api
                 serviceProvider.GetRequiredService<DbContextOptions<AppDbContext>>());
 
             // Clear existing data
-            context.Requests.RemoveRange(context.Requests);
-            context.Users.RemoveRange(context.Users);
-            context.SaveChanges();
+            var changeData = false;
+
+            if (changeData)
+            {                
+                context.Requests.RemoveRange(context.Requests);
+                context.Users.RemoveRange(context.Users);
+                context.Items.RemoveRange(context.Items);
+                context.SaveChanges();
+            }
 
             // Seed Users
-            var users = new User[7];
+            var users = new User[15];
             var hasher = new PasswordHasher<User>();
             var commonPassword = "12345678";
 
-            for (int i = 0; i < 7; i++)
+            for (int i = 0; i < 15; i++) // Create users with random names and emails
             {
                 var name = GenerateRandomName();
                 var user = new User
                 {
                     Email = GenerateRandomEmail(name),
                     Name = name,
-                    IsDriver = i >= 5, // The last 2 users will be drivers
+                    IsDriver = i >= 10, // The last 2 users will be drivers
                     Password = BCrypt.Net.BCrypt.HashPassword(commonPassword)
                 };
                 users[i] = user;
@@ -85,8 +91,8 @@ namespace api
             // Seed Requests
             var allUsers = context.Users.ToList();
             var drivers = allUsers.Where(u => u.IsDriver).ToList();
-            int totalRequests = 30;
-            int driverRequests = (int)(totalRequests * 0.2); // 20% of 30 = 6
+            int totalRequests = 100;
+            int driverRequests = (int)(totalRequests * 0.2); // 20% of requests will have a driver assigned
 
             // Select unique random indices for driver assignments
             var driverRequestIndices = new HashSet<int>();
@@ -122,9 +128,34 @@ namespace api
                 {
                     var driver = drivers[random.Next(drivers.Count)];
                     request.Driver = driver; // Ensure the Request class has a Driver property
+                    // RequestStatus is randomly assigned to either Accepted, Completed, Lost or Cancelled
+                    request.Status = (RequestStatus)random.Next(1, 5);
                 }
 
                 context.Requests.Add(request);
+            }
+
+            context.SaveChanges();
+
+            // Seed Items
+            var requests = context.Requests.ToList();
+            // 2 - 5 items per request
+            foreach (var request in requests)
+            {
+                int itemCount = random.Next(2, 6);
+                for (int i = 0; i < itemCount; i++)
+                {
+                    var item = new Item
+                    {
+                        Request = request,
+                        RequestId = request.RequestId,
+                        ItemName = $"Item {i + 1}",
+                        ItemType = (ItemType)random.Next(0, 5),
+                        Description = "Random item description",
+                        Price = (float)random.NextDouble() * 100
+                    };
+                    context.Items.Add(item);
+                }
             }
 
             context.SaveChanges();
