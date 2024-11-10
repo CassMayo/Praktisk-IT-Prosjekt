@@ -63,7 +63,11 @@ namespace api.Controllers
                     ItemType = itemDTO.ItemType,
                     Description = itemDTO.Description,
                     Price = itemDTO.Price,
-                    Request = request
+                    Request = request,
+                    Image = itemDTO.Image,
+                    Width = itemDTO.Width,
+                    Height = itemDTO.Height,
+                    Depth = itemDTO.Depth
                 };
 
                 var createdItem = await _itemRepository.CreateItemAsync(item);
@@ -140,6 +144,10 @@ namespace api.Controllers
                 item.ItemType = itemDTO.ItemType;
                 item.Description = itemDTO.Description;
                 item.Price = itemDTO.Price;
+                item.Image = itemDTO.Image;
+                item.Width = itemDTO.Width;
+                item.Height = itemDTO.Height;
+                item.Depth = itemDTO.Depth;
 
                 var updatedItem = await _itemRepository.UpdateItemAsync(item);
                 _logger.LogInformation("Successfully updated item {ItemId}", id);

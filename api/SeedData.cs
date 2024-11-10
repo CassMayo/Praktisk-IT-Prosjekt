@@ -152,7 +152,11 @@ namespace api
                         ItemName = $"Item {i + 1}",
                         ItemType = (ItemType)random.Next(0, 5),
                         Description = "Random item description",
-                        Price = (float)random.NextDouble() * 100
+                        Price = (float)random.NextDouble() * 100,
+                        Image = $"https://example.com/images/item{i + 1}.jpg",
+                        Width = random.Next(1, 100),
+                        Height = random.Next(1, 100),
+                        Depth = random.Next(1, 100)
                     };
                     context.Items.Add(item);
                 }
