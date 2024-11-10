@@ -36,6 +36,7 @@ const Order = () => {
         }));
     };
 
+
     const handleSubmitOrderDetails = async (e) => {
         e.preventDefault();
         console.log('Submit button clicked');
@@ -89,9 +90,10 @@ const Order = () => {
 
     return (
         <>
+            <NavBar />
             <div className="main-container">
                 <div className="debug-container">
-                    <p>Debug Info:</p>
+                    <p>Debug Info: {user?.name} </p>
                     <p>Current Step: {step}</p>
                     <p>Request ID: {createdRequestId || 'None'}</p>
                     <p>Is Loading: {isLoading.toString()}</p>
@@ -188,7 +190,6 @@ const Order = () => {
                     )}
                 </div>
             </div>
-            <NavBar />
         </>
     );
 };

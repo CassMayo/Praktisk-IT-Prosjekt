@@ -1,8 +1,8 @@
 import { useState, useEffect, useContext } from 'react';
-import { UserContext } from '../Context/UserContext';
+import { UserContext } from "../Context/UserContext";
 
 const UserOrders = () => {
-  const { token } = useContext(UserContext);
+  const {token } = useContext(UserContext);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -11,6 +11,7 @@ const UserOrders = () => {
     const fetchOrders = async () => {
       try {
         const response = await fetch('http://localhost:5078/api/request', {
+          method: 'GET',
           headers: token ? {
             'Authorization': `Bearer ${token}`
           } : {}
