@@ -1,132 +1,126 @@
 body, #root {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-    width: 100%;
-  }
-  
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 100%;
+}
+
+.userpage-container {
+  display: flex;
+  height: 100vh; /* Full height of the viewport */
+  width: 100%; /* Full width of the viewport */
+  padding-top: 50px; /* Add top padding to prevent overlap with the navbar */
+}
+
+.user-content-wrapper {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 100%;
+}
+
+.profile-section {
+  flex: 0 0 30%; /* Take up 30% of the screen width */
+  height: calc(100vh - 50px); /* Full height minus navbar height */
+  background-color: var(--secondary-background-color);
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  overflow-y: auto; /* Allow scrolling if content overflows */
+}
+
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.profile-picture-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.profile-picture {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-bottom: 10px;
+}
+
+.profile-info h2 {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.profile-info p {
+  font-size: 16px;
+  color: #202020;
+}
+
+.profile-actions {
+  margin-top: 20px;
+}
+
+.create-order-button {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  background-color: #007bff;
+  color: #ffffff;
+  transition: background-color 0.3s ease;
+  font-weight: bold;
+}
+
+.create-order-button:hover {
+  background-color: #0056b3;
+}
+
+.orders-section {
+  flex: 1; /* Take up the remaining 70% of the screen width */
+  background-color: var(--main-background-color);
+  padding: 20px;
+  overflow-y: auto; /* Allow scrolling if content overflows */
+}
+
+.orders-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px; /* Space between each order */
+}
+
+.order {
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 20px;
+  margin-bottom: 10px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+@media (max-width: 768px) {
   .userpage-container {
-    display: flex;
-    height: 100vh; /* Full height of the viewport */
-    width: 100%; /* Full width of the viewport */
-    padding-top: 50px; /* Add top padding to prevent overlap with the navbar */
+      flex-direction: column;
+      padding-top: 70px; /* Adjust padding for smaller screens */
   }
 
   .profile-section {
-    flex: 0 0 30%;;
-    width: 100%;
-    background-color: var(--secondary-background-color);
-    padding: 20px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    overflow-y: auto; /* Allow scrolling if content overflows */
-  }
-  
-  .profile-picture {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-bottom: 20px;
-    font-size: 24px;
-    font-weight: bold;
-    margin-top: 20px;
-  }
-  
-  .profile-name {
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 10px;
-    color: #000000;
-  }
-  
-  .profile-email {
-    font-size: 16px;
-    font-weight: bold;
-    color: #202020;
-  }
-  
-  .orders-section {
-    flex: 1;
-    background-color: var(--main-background-color);
-    padding: 20px;
-    overflow-y: auto; /* Allow scrolling if content overflows */
-  }
-  
-  .orders-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-  }
-  
-  .orders-title {
-    font-size: 24px;
-    font-weight: bold;
-    color: #fff;
-  }
-  
-  .btn-button {
-    width: 100%;
-    padding: 10px;
-    box-sizing: border-box;
-    color: rgb(0, 0, 0);
-    border: none;
-    border-radius: 8px;
-    font-size: 1rem;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    font-weight: bold;
-  }
-  
-  .create-order-button:hover {
-    background-color: #0056b3;
-  }
-
-  .orders-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px; /* Space between each order */
-  }
-  
-  .order {
-    display: flex;
-    flex-direction: column;
-    background-color: #fff;
-    border: 1px solid #ccc;
-    padding: 20px;
-    margin-bottom: 10px;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  }
-  
-  .order h3 {
-    margin: 0 0 10px;
-  }
-  
-  .order p {
-    margin: 5px 0;
-  }
-  
-  @media (max-width: 768px) {
-    .userpage-container {
-      flex-direction: column;
-      padding-top: 70px; /* Adjust padding for smaller screens */
-    }
-  
-    .profile-section {
       flex: 0 0 auto; /* Allow the profile section to adjust its height */
       width: 100%; /* Full width on smaller screens */
       margin-bottom: 20px; /* Add margin to separate sections */
-    }
-  
-    .orders-section {
-      flex: 1;
-      width: 100%; /* Full width on smaller screens */
-    }
+      height: auto; /* Adjust height for smaller screens */
   }
 
-  
+  .orders-section {
+      flex: 1;
+      width: 100%; /* Full width on smaller screens */
+  }
+}

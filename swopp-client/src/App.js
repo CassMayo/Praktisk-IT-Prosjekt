@@ -12,6 +12,8 @@ import ProtectedRoute from "./Components/ProtectedComponent";
 import AllOrders from "./Components/Order/OrderDashboard";
 import CreateItem from "./Components/Order/CreateItem";
 import OrderDashboard from "./Components/Order/OrderDashboard";
+import UserOrders from "./Components/customHooks/UserOrders";
+import MyOrder from "./Components/Order/MyOrder";
 
 
 
@@ -32,6 +34,8 @@ const App = () => {
           <Route path="/all-orders" element={<AllOrders />} />
           <Route path="/create-item" element={<CreateItem />} />
           <Route path="/order-dashboard" element={<OrderDashboard />} />
+          <Route path="/user-orders" element={<UserOrders />} />
+          <Route path="/my-order" element={<MyOrder />} />
         </Routes>
       </Router>
     </UserProvider>

@@ -5,21 +5,25 @@ import { UserContext } from "../../Context/UserContext";
 import Truck_w_smoke from "../../../Assets/Truck_w_smoke.png";
 
 const Login = () => {
-  const [errorMessage, setErrorMessage] = useState("");
+  const { login } = useContext(UserContext);
   const navigate = useNavigate();
-  const { login } = useContext(UserContext); // Use login from context
-
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setIsLoading(true);
+    setErrorMessage("");
+
     const form = new FormData(event.target);
     const data = {
       email: form.get("email"),
       password: form.get("password"),
-
     };
 
     try {
+      console.log("Attempting login with:", { email: data.email });
+      
       const response = await fetch("http://localhost:5078/api/user/login", {
         method: "POST",
         headers: {
@@ -28,48 +32,83 @@ const Login = () => {
         body: JSON.stringify(data),
       });
 
-      if (response.ok) {
-        const result = await response.json();
-        setErrorMessage("");
+      console.log("Login response status:", response.status);
+
+      const result = await response.json();
+      
+      if (response.ok && result.token) {
+        console.log("Login successful, setting user data");
         
-        // Use the login function from context
-        login({ name: result.name, email: result.email }, result.token);
-        //console.log("Login response:", result); //This checks the response from the server if we actually get the user data and token
+        // Make sure we have all required user data
+        const userData = {
+          name: result.name,
+          email: result.email,
+          // Add any other user fields you need
+        };
+
+        await login(userData, result.token);
+        console.log("User context updated, navigating to user page");
         
-        navigate("/user"); // Navigate to user page
+        navigate("/user");
       } else {
-        const errorData = await response.json();
-        setErrorMessage(errorData.message || "Login failed. Please try again.");
+        console.error("Login failed:", result);
+        setErrorMessage(result.message || "Login failed. Please check your credentials.");
       }
     } catch (error) {
-      console.error(error);
-      setErrorMessage("An error occurred. Please try again later.");
+      console.error("Login error:", error);
+      setErrorMessage("An error occurred during login. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-    return (
-        <article className="login">
-            <section className="login-left">
-                <section>
-                    <h1>Welcome back!</h1>
-                    <h2>We're Happy to see you.</h2>
-                </section>
-                <div className="login-input">
-                    {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
-                    <form onSubmit={handleSubmit}>
-                        <label htmlFor="email">Email:</label>
-                        <input type="email" id="email" name="email" required />
-                        <label htmlFor="password">Password:</label>
-                        <input type="password" id="password" name="password" required />
-                        <button type="submit">Login</button>
-                    </form>
-                </div>
-            </section>
-            <div className="login-right">
-                <img src={Truck_w_smoke} alt="Truck with smoke" />
+  return (
+    <article className="login">
+      <section className="login-left">
+        <section>
+          <h1>Welcome back!</h1>
+          <h2>We're Happy to see you.</h2>
+        </section>
+        <div className="login-input">
+          {errorMessage && (
+            <div className="error-message">
+              {errorMessage}
             </div>
-        </article>
-    );
+          )}
+          <form onSubmit={handleSubmit}>
+            <label htmlFor="email">Email:</label>
+            <input 
+              type="email" 
+              id="email" 
+              name="email" 
+              required 
+              disabled={isLoading}
+            />
+            
+            <label htmlFor="password">Password:</label>
+            <input 
+              type="password" 
+              id="password" 
+              name="password" 
+              required 
+              disabled={isLoading}
+            />
+            
+            <button 
+              type="submit" 
+              disabled={isLoading}
+              className={isLoading ? 'button-loading' : ''}
+            >
+              {isLoading ? 'Logging in...' : 'Login'}
+            </button>
+          </form>
+        </div>
+      </section>
+      <div className="login-right">
+        <img src={Truck_w_smoke} alt="Truck with smoke" />
+      </div>
+    </article>
+  );
 };
 
 export default Login;
