@@ -146,13 +146,19 @@ namespace api.Controllers
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["Key"]));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var claims = new[]
+            var claims = new List<Claim>
             {
-        new Claim(JwtRegisteredClaimNames.Sub, user.Email),
-        new Claim(JwtRegisteredClaimNames.Email, user.Email),
-        new Claim(ClaimTypes.Name, user.Name),
-        new Claim(ClaimTypes.Role, "User")  // You can modify this based on your user roles
-    };
+                new Claim(JwtRegisteredClaimNames.Sub, user.Email),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email),
+                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Role, "User") // Always assign "User" role
+            };
+
+            // Assign "Driver" role if the user is a driver
+            if (user.IsDriver)
+            {
+                claims.Add(new Claim(ClaimTypes.Role, "Driver"));
+            }
 
             var token = new JwtSecurityToken(
                 issuer: jwtSettings["Issuer"],
