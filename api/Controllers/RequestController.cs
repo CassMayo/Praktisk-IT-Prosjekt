@@ -128,8 +128,7 @@ namespace api.Controllers
             }
         }
 
-        // update request
-        [HttpPost("{id}")]
+        [HttpPut("{id}")]
         [Authorize]
         public async Task<IActionResult> UpdateRequest(int id, [FromBody] UpdateRequestDTO requestDTO)
         {
@@ -154,6 +153,86 @@ namespace api.Controllers
             {
                 _logger.LogError(ex, "Error updating request {RequestId}", id);
                 return StatusCode(500, new { message = "An error occurred while updating the request." });
+            }
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteRequest(int id)
+        {
+            try
+            {
+                var email = User.FindFirst(ClaimTypes.Email)?.Value;
+                var request = await _requestRepository.GetRequestByIdAsync(id);
+                if (request == null)
+                    return NotFound(new { message = "Request not found." });
+
+                if (request.SenderEmail != email)
+                    return Unauthorized(new { message = "Unauthorized." });
+
+                var success = await _requestRepository.DeleteRequestAsync(id);
+                if (success)
+                    return Ok(new { message = "Request deleted successfully." });
+                else
+                    return StatusCode(500, new { message = "An error occurred while deleting the request." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting request {RequestId}", id);
+                return StatusCode(500, new { message = "An error occurred while deleting the request." });
+            }
+        }
+
+        [HttpPatch("{id}")]
+        [Authorize]
+        public async Task<IActionResult> AssignDriver(int id)
+        {
+            try
+            {
+                var email = User.FindFirst(ClaimTypes.Email)?.Value;
+                // if user has driver role
+                if (!User.IsInRole("Driver"))
+                {
+                    return Unauthorized(new { message = "Unauthorized." });
+                }
+
+                var updatedRequest = await _requestRepository.AssignDriverToRequestAsync(id, email);
+                if (updatedRequest == null)
+                {
+                    return NotFound($"Request with ID {id} not found.");
+                }
+                return Ok(updatedRequest);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error assigning driver to request with ID {RequestId}", id);
+                return StatusCode(500, "An error occurred while assigning the driver.");
+            }
+        }
+
+        [HttpPut("{id}/status")]
+        [Authorize]
+        public async Task<IActionResult> UpdateRequestStatus(int id, [FromBody] string newStatus)
+        {
+            try
+            {
+                var status = Enum.Parse<RequestStatus>(newStatus, true);
+                var email = User.FindFirst(ClaimTypes.Email)?.Value;
+                var request = await _requestRepository.GetRequestByIdAsync(id);
+                if (request == null)
+                    return NotFound(new { message = "Request not found." });
+                if (status == RequestStatus.Completed && request.DriverEmail != email)
+                    return Unauthorized(new { message = "Unauthorized." });
+                if (status == RequestStatus.Cancelled && request.SenderEmail != email)
+                    return Unauthorized(new { message = "Unauthorized." });
+                
+                var updatedRequest = await _requestRepository.UpdateRequestStatusAsync(id, status);
+                return Ok(updatedRequest);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error updating request status for request with ID {RequestId}", id);
+                return StatusCode(500, new { message = "An error occurred while updating the request status." });
             }
         }
     }
