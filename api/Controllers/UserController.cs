@@ -26,6 +26,39 @@ namespace api.Controllers
             _logger = logger;
             _configuration = configuration;
         }
+        [HttpPost("upload-profile-picture")]
+        [Authorize]
+        public async Task<IActionResult> UploadProfilePicture(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest(new { message = "No file uploaded." });
+
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            if (email == null)
+                return Unauthorized(new { message = "Unauthorized." });
+
+            var user = await _userRepository.GetUserByEmailAsync(email);
+            if (user == null)
+                return NotFound(new { message = "User not found." });
+            
+            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
+            if (!Directory.Exists(uploadsFolder))
+            {
+                Directory.CreateDirectory(uploadsFolder);
+            }
+
+            var filePath = Path.Combine("wwwroot", "uploads", $"{email}_{file.FileName}");
+
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(stream);
+            }
+
+            user.Pfp = $"/uploads/{email}_{file.FileName}";
+            await _userRepository.UpdateUserAsync(user);
+
+            return Ok(new { pfp = user.Pfp });
+        }
 
         [HttpPost("register")]
         [AllowAnonymous]
@@ -183,4 +216,6 @@ namespace api.Controllers
             return Ok(new { message = "Welcome to admin dashboard" });
         }
     }
+
+
 }
