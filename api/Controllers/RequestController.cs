@@ -80,10 +80,12 @@ namespace api.Controllers
         }
         
         [HttpGet("user/{email}")]
+        [Authorize] // Only authorized users can access this endpoint
         public async Task<IActionResult> GetUserRequests(string email)
         {
             try
             {
+                
                 var requests = await _requestRepository.GetRequestsBySenderAsync(email);
                 return Ok(requests);
             }

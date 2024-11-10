@@ -1,0 +1,177 @@
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  overflow: hidden;
+}
+
+h1 {
+  color: var(--secondary-text-color); /* Set the color to black */
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+h2 {
+  color: var(--main-text-color);
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 20px; /* Adjust margin as needed */
+  text-align: left;
+}
+
+/* Container for the order form and debug info */
+.main-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  margin: 50px auto;
+  flex-direction: column;
+  flex-direction: row;
+  max-width: 90%; /* Increase the max-width to make the form wider */
+  height: calc(100vh - 75px);
+}
+
+/* Debug info styling */
+.debug-container {
+  background-color: #f0f0f0;
+  display: flex;
+  flex-direction: column;
+  padding: 10px;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #333;
+  width: 250px; /* Fixed width for the debug info box */
+  margin-top: 120px;
+}
+
+/* Form container styling */
+.order-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  padding: 30px 40px 40px; /* Add padding to the container */
+}
+
+/* Form styling */
+.order-form {
+  display: flex;
+  flex-direction: column;
+  background-color: var(--secondary-background-color);
+  padding: 40px;
+  padding-top: 5px;
+  width: 100%;
+  max-width: 600px; /* Set a max-width for the form */
+  box-sizing: border-box;
+  border-radius: 10px;
+}
+
+/* Form group styling */
+.form-group {
+  margin-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Label styling */
+.form-group label {
+  font-weight: bold;
+  color:#333;
+  margin-bottom: 5px;
+  text-align: left;
+}
+
+/* Input and textarea styling */
+.form-control {
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 10px;
+  box-sizing: border-box;
+  margin: 10px 0;
+  border: 1px solid var(--primary-background-color);
+  border-radius: 8px;
+  color: var(--primary-text-color);
+  font-size: 1rem;
+  outline: none;
+  transition: background-color 0.2s ease;
+  background-color: rgba(188, 191, 235, 0.286);
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Button styling */
+.btn-submit {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
+  background-color: var(--primary-button-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  font-weight: bold;
+}
+
+.btn-submit:hover {
+  background-color: var(--secondary-button-color);
+}
+
+/* Error message styling */
+.error-message {
+  color: #ff0000;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+/* Link styling */
+.link {
+  color: #007bff;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.link:hover {
+  color: #0056b3;
+}
+
+@media (max-width: 768px) {
+  .main-container {
+    flex-direction: column;
+    gap: 20px;
+    padding-top: 50px;
+    overflow-y: auto;
+  }
+
+  .order-container {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .order-form {
+    padding: 40px;
+    gap: 5px;
+  }
+
+  .form-control {
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .btn-submit {
+    max-width: 100%;
+  }
+
+  .debug-container {
+    display: none; /* Hide the debug container in mobile view */
+  }
+}

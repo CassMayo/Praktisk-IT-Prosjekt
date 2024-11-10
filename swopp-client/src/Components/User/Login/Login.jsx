@@ -9,12 +9,14 @@ const Login = () => {
   const navigate = useNavigate();
   const { login } = useContext(UserContext); // Use login from context
 
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const form = new FormData(event.target);
     const data = {
       email: form.get("email"),
       password: form.get("password"),
+
     };
 
     try {
