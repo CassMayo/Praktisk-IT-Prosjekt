@@ -87,10 +87,16 @@ namespace api
 
             if (changeData)
             {                
+                context.Items.RemoveRange(context.Items);
                 context.Requests.RemoveRange(context.Requests);
                 context.Users.RemoveRange(context.Users);
-                context.Items.RemoveRange(context.Items);
                 context.SaveChanges();
+            }
+
+            // Check if data already exists
+            if (context.Users.Any())
+            {
+                return; // Data was already seeded
             }
 
             // Seed Users
