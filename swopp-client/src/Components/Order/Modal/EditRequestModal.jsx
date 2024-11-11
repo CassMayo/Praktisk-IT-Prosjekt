@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
-import './CreateOrderModal.css';
+import './CreateOrderModal.css'; // We can reuse the styling
 
-const CreateOrderModal = ({ show, onHide, onSubmit, isLoading }) => {
+const EditRequestModal = ({ show, onHide, onSubmit, isLoading, initialData }) => {
     const [formData, setFormData] = useState({
-        pickupLocation: '',
-        dropoffLocation: '',
-        scheduledAt: '',
-        alternateDate: '',
-        description: '',
-        anytimeScheduled: false,
-        anytimeAlternate: false,
+        pickupLocation: initialData.pickupLocation || '',
+        dropoffLocation: initialData.dropoffLocation || '',
+        scheduledAt: initialData.scheduledAt || '',
+        alternateDate: initialData.alternateDate || '',
+        description: initialData.description || '',
+        anytimeScheduled: !initialData.scheduledAt,
+        anytimeAlternate: !initialData.alternateDate,
     });
 
     const handleSubmit = (e) => {
@@ -28,7 +28,7 @@ const CreateOrderModal = ({ show, onHide, onSubmit, isLoading }) => {
         <div className="create-order-overlay" onClick={onHide}>
             <div className="create-order-content" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
-                    <h2>Create New Order</h2>
+                    <h2>Edit Order</h2>
                     <button className="modal-close" onClick={onHide}>&times;</button>
                 </div>
 
@@ -66,7 +66,7 @@ const CreateOrderModal = ({ show, onHide, onSubmit, isLoading }) => {
                     <div className="form-group">
                         <label>Earliest date*</label>
                         <input
-                            type="date" // Changed to 'date' instead of 'datetime-local'
+                            type="date"
                             value={formData.anytimeScheduled ? '' : formData.scheduledAt}
                             onChange={(e) =>
                                 setFormData((prev) => ({
@@ -75,7 +75,7 @@ const CreateOrderModal = ({ show, onHide, onSubmit, isLoading }) => {
                                 }))
                             }
                             disabled={formData.anytimeScheduled}
-                            required
+                            required={!formData.anytimeScheduled}
                         />
                         <label>
                             <input
@@ -96,7 +96,7 @@ const CreateOrderModal = ({ show, onHide, onSubmit, isLoading }) => {
                     <div className="form-group">
                         <label>Latest date</label>
                         <input
-                            type="date" // Changed to 'date' instead of 'datetime-local'
+                            type="date"
                             value={formData.anytimeAlternate ? '' : formData.alternateDate}
                             onChange={(e) =>
                                 setFormData((prev) => ({
@@ -105,7 +105,7 @@ const CreateOrderModal = ({ show, onHide, onSubmit, isLoading }) => {
                                 }))
                             }
                             disabled={formData.anytimeAlternate}
-                            min={formData.scheduledAt || ''} // Set the min date to the selected earliest date
+                            min={formData.scheduledAt || ''}
                         />
                         <label>
                             <input
@@ -142,7 +142,7 @@ const CreateOrderModal = ({ show, onHide, onSubmit, isLoading }) => {
                             Cancel
                         </button>
                         <button type="submit" className="btn-submit" disabled={isLoading}>
-                            {isLoading ? 'Creating...' : 'Create Order'}
+                            {isLoading ? 'Saving...' : 'Save Changes'}
                         </button>
                     </div>
                 </form>
@@ -151,4 +151,4 @@ const CreateOrderModal = ({ show, onHide, onSubmit, isLoading }) => {
     );
 };
 
-export default CreateOrderModal;
+export default EditRequestModal;

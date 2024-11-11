@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import CreateOrderModal from './Modal/CreateOrderModal';
 import AddItemModal from './Modal/AddItemModal';
 import OrderDetailsCard from './Modal/OrderDetailsCard';
+import EditRequestModal from './Modal/EditRequestModal';
+import EditItemModal from './Modal/EditItemModal';
 import './Order.css';
 import NavBar from '../Navigation/NavBar';
 
@@ -28,6 +30,10 @@ const Order = () => {
     const [items, setItems] = useState([]);
     const [userOrderCount, setUserOrderCount] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
+
+    const [showEditRequestModal, setShowEditRequestModal] = useState(false);
+    const [showEditItemModal, setShowEditItemModal] = useState(false);
+    const [selectedItem, setSelectedItem] = useState(null);
 
     useEffect(() => {
         const fetchUserOrders = async () => {
@@ -115,17 +121,11 @@ const Order = () => {
     };
 
     const handleSwoopAway = async () => {
-        if (items.length === 0) {
-            alert('Please add at least one item before submitting the order');
-            return;
-        }
-
-        if (!window.confirm('Are you sure you want to submit this order? You won\'t be able to edit it after submission.')) {
-            return;
-        }
-
         setIsLoading(true);
         try {
+            // Determine the status based on whether there are items
+            const newStatus = items.length > 0 ? RequestStatus.Pending : RequestStatus.Draft;
+
             const response = await fetch(`http://localhost:5078/api/request/${createdRequestId}`, {
                 method: 'PUT',
                 headers: {
@@ -134,15 +134,20 @@ const Order = () => {
                 },
                 body: JSON.stringify({
                     ...orderData,
-                    status: RequestStatus.Pending
+                    status: newStatus
                 })
             });
 
             if (response.ok) {
-                alert('Order submitted successfully!');
-                navigate('/user');
+                // Different messages based on status
+                if (newStatus === RequestStatus.Pending) {
+                    alert('Order submitted successfully!');
+                    navigate('/user');
+                } else {
+                    alert('Order saved as draft. Please add items before submitting.');
+                }
             } else {
-                throw new Error('Failed to submit order');
+                throw new Error('Failed to update order');
             }
         } catch (error) {
             console.error('Error:', error);
@@ -152,9 +157,47 @@ const Order = () => {
         }
     };
 
+
     const handleItemAdded = (newItem) => {
         setItems(prev => [...prev, newItem]);
         setShowAddItemModal(false);
+    };
+
+    const handleEditRequest = async (updatedData) => {
+        setIsLoading(true);
+        try {
+            const response = await fetch(`http://localhost:5078/api/request/${createdRequestId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    ...updatedData,
+                    status: RequestStatus.Draft
+                })
+            });
+
+            if (response.ok) {
+                setOrderData(updatedData);
+                setShowEditRequestModal(false);
+            } else {
+                throw new Error('Failed to update request');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert(error.message);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleItemUpdated = (updatedItem) => {
+        setItems(prevItems =>
+            prevItems.map(item =>
+                item.id === updatedItem.id ? updatedItem : item
+            )
+        );
     };
 
     if (!user || !token) {
@@ -188,6 +231,7 @@ const Order = () => {
                             onSwoopAway={handleSwoopAway}
                             isLoading={isLoading}
                             userOrderCount={userOrderCount}
+                            onEditRequest={() => setShowEditRequestModal(true)}
                         />
                     </div>
                 )}
@@ -209,6 +253,27 @@ const Order = () => {
                     onHide={() => setShowAddItemModal(false)}
                     requestId={createdRequestId}
                     onItemAdded={handleItemAdded}
+                />
+            )}
+            {showEditRequestModal && (
+                <EditRequestModal
+                    show={showEditRequestModal}
+                    onHide={() => setShowEditRequestModal(false)}
+                    onSubmit={handleEditRequest}
+                    isLoading={isLoading}
+                    initialData={orderData}
+                />
+            )}
+
+            {showEditItemModal && selectedItem && (
+                <EditItemModal
+                    show={showEditItemModal}
+                    onHide={() => {
+                        setShowEditItemModal(false);
+                        setSelectedItem(null);
+                    }}
+                    item={selectedItem}
+                    onItemUpdated={handleItemUpdated}
                 />
             )}
         </>
