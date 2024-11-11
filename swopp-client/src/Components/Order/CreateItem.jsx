@@ -1,9 +1,7 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { UserContext } from '../Context/UserContext';
 import { useNavigate } from 'react-router-dom';
-import MyOrder from './MyOrder';
 
-// Define enum to match backend
 const ItemType = {
     Electronics: 0,
     Clothing: 1,
@@ -13,7 +11,7 @@ const ItemType = {
 };
 
 const CreateItem = ({ requestId, onItemAdded }) => {
-    const { token, user } = useContext(UserContext);
+    const { token } = useContext(UserContext);
     const navigate = useNavigate();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [error, setError] = useState(null);
@@ -21,7 +19,7 @@ const CreateItem = ({ requestId, onItemAdded }) => {
     const [itemData, setItemData] = useState({
         requestId: requestId,
         itemName: '',
-        itemType: ItemType.Electronics, // Initialize with enum value instead of string
+        itemType: ItemType.Electronics,
         description: '',
         price: '',
         width: '',
@@ -36,7 +34,6 @@ const CreateItem = ({ requestId, onItemAdded }) => {
         price: true
     });
 
-    // Map enum values to display names
     const itemTypes = [
         { value: ItemType.Electronics, label: 'Electronics' },
         { value: ItemType.Clothing, label: 'Clothing' },
@@ -81,7 +78,7 @@ const CreateItem = ({ requestId, onItemAdded }) => {
             [name]: ['price', 'width', 'height', 'depth'].includes(name) 
                 ? (value === '' ? '' : parseFloat(value))
                 : name === 'itemType' 
-                    ? parseInt(value) // Parse itemType as integer
+                    ? parseInt(value)
                     : value
         }));
     };
@@ -154,47 +151,42 @@ const CreateItem = ({ requestId, onItemAdded }) => {
     };
 
     if (!requestId) {
-        return <div className="p-4 text-red-500 bg-red-50 rounded">Error: No request ID available</div>;
+        return <div className="alert alert-danger">Error: No request ID available</div>;
     }
 
     return (
-        <div className="mt-4 p-4 border rounded shadow-sm bg-white">
-            <h3 className="text-lg font-semibold mb-4">Add New Item</h3>
+        <div>
+            <h3 className="mb-4">Add New Item</h3>
             
             {error && (
-                <div className="mb-4 p-3 bg-red-50 text-red-500 rounded border border-red-200">
+                <div className="alert alert-danger">
                     {error}
                 </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                    <label className="block text-sm font-medium mb-1">
-                        Item Name *
-                    </label>
+            <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                    <label className="form-label">Item Name *</label>
                     <input
                         type="text"
                         name="itemName"
                         value={itemData.itemName}
                         onChange={handleInputChange}
-                        className={`w-full p-2 border rounded focus:ring-2 focus:ring-blue-200 
-                            ${!validation.itemName ? 'border-red-500' : 'border-gray-300'}`}
+                        className="form-control"
                         required
                     />
                     {!validation.itemName && (
-                        <p className="mt-1 text-sm text-red-500">Item name is required</p>
+                        <small className="text-danger">Item name is required</small>
                     )}
                 </div>
 
-                <div>
-                    <label className="block text-sm font-medium mb-1">
-                        Item Type *
-                    </label>
+                <div className="mb-3">
+                    <label className="form-label">Item Type *</label>
                     <select
                         name="itemType"
                         value={itemData.itemType}
                         onChange={handleInputChange}
-                        className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-200"
+                        className="form-select"
                         required
                     >
                         {itemTypes.map(type => (
@@ -205,101 +197,84 @@ const CreateItem = ({ requestId, onItemAdded }) => {
                     </select>
                 </div>
 
-                <div>
-                    <label className="block text-sm font-medium mb-1">
-                        Description *
-                    </label>
+                <div className="mb-3">
+                    <label className="form-label">Description *</label>
                     <textarea
                         name="description"
                         value={itemData.description}
                         onChange={handleInputChange}
-                        className={`w-full p-2 border rounded focus:ring-2 focus:ring-blue-200
-                            ${!validation.description ? 'border-red-500' : 'border-gray-300'}`}
+                        className="form-control"
                         rows="3"
                         required
                     />
                     {!validation.description && (
-                        <p className="mt-1 text-sm text-red-500">Description is required</p>
+                        <small className="text-danger">Description is required</small>
                     )}
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                    <div>
-                        <label className="block text-sm font-medium mb-1">
-                            Price * (Kr)
-                        </label>
+                <div className="row">
+                    <div className="col-md-6 mb-3">
+                        <label className="form-label">Price * (Kr)</label>
                         <input
                             type="number"
                             name="price"
                             value={itemData.price}
                             onChange={handleInputChange}
-                            className={`w-full p-2 border rounded focus:ring-2 focus:ring-blue-200
-                                ${!validation.price ? 'border-red-500' : 'border-gray-300'}`}
+                            className="form-control"
                             step="0.01"
                             min="0"
                             required
                         />
                         {!validation.price && (
-                            <p className="mt-1 text-sm text-red-500">Valid price is required</p>
+                            <small className="text-danger">Valid price is required</small>
                         )}
                     </div>
-
-                    <div>
-                        <label className="block text-sm font-medium mb-1">
-                            Image URL
-                        </label>
+                    <div className="col-md-6 mb-3">
+                        <label className="form-label">Image URL</label>
                         <input
                             type="text"
                             name="image"
                             value={itemData.image}
                             onChange={handleInputChange}
-                            className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-200"
+                            className="form-control"
                             placeholder="Enter image URL"
                         />
                     </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-4">
-                    <div>
-                        <label className="block text-sm font-medium mb-1">
-                            Width (cm)
-                        </label>
+                <div className="row">
+                    <div className="col-md-4 mb-3">
+                        <label className="form-label">Width (cm)</label>
                         <input
                             type="number"
                             name="width"
                             value={itemData.width}
                             onChange={handleInputChange}
-                            className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-200"
+                            className="form-control"
                             step="0.1"
                             min="0"
                         />
                     </div>
-
-                    <div>
-                        <label className="block text-sm font-medium mb-1">
-                            Height (cm)
-                        </label>
+                    <div className="col-md-4 mb-3">
+                        <label className="form-label">Height (cm)</label>
                         <input
                             type="number"
                             name="height"
                             value={itemData.height}
                             onChange={handleInputChange}
-                            className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-200"
+                            className="form-control"
                             step="0.1"
                             min="0"
                         />
                     </div>
-
-                    <div>
-                        <label className="block text-sm font-medium mb-1">
-                            Depth (cm)
-                        </label>
+                    <div className="col-md-4 mb-3">
+                        <label className="form-label">Depth (cm)</label>
                         <input
                             type="number"
                             name="depth"
                             value={itemData.depth}
                             onChange={handleInputChange}
-                            className="w-full p-2 border rounded focus:ring-2 focus:ring-blue-200"
+                            className="form-control"
                             step="0.1"
                             min="0"
                         />
@@ -309,15 +284,11 @@ const CreateItem = ({ requestId, onItemAdded }) => {
                 <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`w-full py-2 px-4 rounded font-bold
-                        ${isSubmitting 
-                            ? 'bg-gray-400 cursor-not-allowed' 
-                            : 'bg-blue-500 hover:bg-blue-600 text-white'}`}
+                    className="btn btn-primary w-100"
                 >
                     {isSubmitting ? 'Adding Item...' : 'Add Item'}
                 </button>
             </form>
-
         </div>
     );
 };

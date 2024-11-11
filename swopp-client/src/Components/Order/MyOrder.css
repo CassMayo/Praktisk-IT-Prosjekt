@@ -1,205 +1,65 @@
-.my-orders-container {
-    padding: 2rem;
-    max-width: 1200px;
-    margin: 0 auto;
-  }
-  
-  .my-orders-container h2 {
-    font-size: 2rem;
-    margin-bottom: 2rem;
-    color: #333;
-  }
-  
-  .orders-grid {
-    display: grid;
-    gap: 2rem;
-  }
-  
-  .order-card {
-    background: white;
+.btn-create {
+    background-color: var(--primary-button-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
     border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
-  }
-  
-  .order-header {
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.btn-create:hover {
+    background-color: var(--secondary-button-color);
+}
+
+.btn-create:disabled {
+    background-color: #9ca3af;
+    cursor: not-allowed;
+}
+
+.order-title {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 1rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid #eee;
-  }
-  
-  .order-title {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-  }
-  
-  .order-title h3 {
-    margin: 0;
-    font-size: 1.25rem;
-    color: #2d3748;
-  }
-  
-  .status-badge {
-    padding: 0.25rem 0.75rem;
-    border-radius: 9999px;
-    font-size: 0.875rem;
-    font-weight: 500;
-  }
-  
-  .status-pending {
-    background-color: #fed7aa;
-    color: #9a3412;
-  }
-  
-  .status-completed {
-    background-color: #bbf7d0;
-    color: #166534;
-  }
-  
-  .status-cancelled {
-    background-color: #fecaca;
-    color: #991b1b;
-  }
-  
-  .order-actions {
-    display: flex;
-    gap: 0.5rem;
-  }
-  
-  .edit-btn, .delete-btn, .toggle-items-btn {
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  
-  .edit-btn {
-    background-color: #3b82f6;
-    color: white;
-    border: none;
-  }
-  
-  .edit-btn:hover {
-    background-color: #2563eb;
-  }
-  
-  .delete-btn {
-    background-color: #ef4444;
-    color: white;
-    border: none;
-  }
-  
-  .delete-btn:hover {
-    background-color: #dc2626;
-  }
-  
-  .toggle-items-btn {
-    background-color: #f3f4f6;
-    color: #374151;
-    border: 1px solid #d1d5db;
+    margin-bottom: 2rem;
     width: 100%;
-    margin: 1rem 0;
-  }
-  
-  .toggle-items-btn:hover {
-    background-color: #e5e7eb;
-  }
-  
-  .order-details {
-    color: #4b5563;
-  }
-  
-  .location-details {
-    display: grid;
-    gap: 0.5rem;
-  }
-  
-  .items-grid {
-    display: grid;
-    gap: 1rem;
-    margin-top: 1rem;
-  }
-  
-  .item-card {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 1rem;
-    padding: 1rem;
-    background-color: #f9fafb;
-    border-radius: 6px;
-  }
-  
-  .item-image {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 4px;
-  }
-  
-  .item-details {
-    display: grid;
-    gap: 0.5rem;
-  }
-  
-  .item-details h4 {
-    margin: 0;
-    color: #1f2937;
-    font-size: 1.125rem;
-  }
-  
-  .item-description {
-    font-size: 0.875rem;
-    color: #6b7280;
-  }
-  
-  .item-dimensions {
+}
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
-    gap: 1rem;
-    font-size: 0.875rem;
-    color: #6b7280;
-  }
-  
-  .my-orders-loading {
-    text-align: center;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-content {
+    background-color: var(--secondary-background-color);
     padding: 2rem;
-    color: #6b7280;
-  }
-  
-  .my-orders-error {
-    text-align: center;
-    padding: 2rem;
-    color: #dc2626;
-    background-color: #fee2e2;
-    border-radius: 6px;
-  }
-  
-  /* Responsive design */
-  @media (max-width: 768px) {
-    .order-header {
-      flex-direction: column;
-      gap: 1rem;
-    }
-  
-    .order-actions {
-      width: 100%;
-      justify-content: stretch;
-    }
-  
-    .edit-btn, .delete-btn {
-      flex: 1;
-    }
-  
-    .item-card {
-      grid-template-columns: 1fr;
-    }
-  
-    .item-image {
-      width: 100%;
-      height: 200px;
-    }
-  }
+    border-radius: 10px;
+    max-width: 90%;
+    width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 8px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
