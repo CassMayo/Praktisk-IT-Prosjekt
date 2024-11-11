@@ -5,11 +5,12 @@ import './MyOrder.css';
 
 // Status mapping enum
 const RequestStatus = {
-  0: 'Pending',
-  1: 'Accepted',
-  2: 'InProgress',
+  0: 'Draft',
+  1: 'Pending',
+  2: 'Accepted',
   3: 'Completed',
-  4: 'Cancelled'
+  4: 'Cancelled',
+  5: 'lost'
 };
 
 const MyOrder = () => {

@@ -1,6 +1,16 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { UserContext } from '../Context/UserContext';
 import { useNavigate } from 'react-router-dom';
+import MyOrder from './MyOrder';
+
+// Define enum to match backend
+const ItemType = {
+    Electronics: 0,
+    Clothing: 1,
+    Furniture: 2,
+    Books: 3,
+    Other: 4
+};
 
 const CreateItem = ({ requestId, onItemAdded }) => {
     const { token, user } = useContext(UserContext);
@@ -11,7 +21,7 @@ const CreateItem = ({ requestId, onItemAdded }) => {
     const [itemData, setItemData] = useState({
         requestId: requestId,
         itemName: '',
-        itemType: 'Electronics',
+        itemType: ItemType.Electronics, // Initialize with enum value instead of string
         description: '',
         price: '',
         width: '',
@@ -26,7 +36,14 @@ const CreateItem = ({ requestId, onItemAdded }) => {
         price: true
     });
 
-    const itemTypes = ['Electronics', 'Clothing', 'Furniture', 'Books', 'Other'];
+    // Map enum values to display names
+    const itemTypes = [
+        { value: ItemType.Electronics, label: 'Electronics' },
+        { value: ItemType.Clothing, label: 'Clothing' },
+        { value: ItemType.Furniture, label: 'Furniture' },
+        { value: ItemType.Books, label: 'Books' },
+        { value: ItemType.Other, label: 'Other' }
+    ];
 
     useEffect(() => {
         if (!token) {
@@ -63,7 +80,9 @@ const CreateItem = ({ requestId, onItemAdded }) => {
             ...prev,
             [name]: ['price', 'width', 'height', 'depth'].includes(name) 
                 ? (value === '' ? '' : parseFloat(value))
-                : value
+                : name === 'itemType' 
+                    ? parseInt(value) // Parse itemType as integer
+                    : value
         }));
     };
 
@@ -110,7 +129,7 @@ const CreateItem = ({ requestId, onItemAdded }) => {
                 setItemData({
                     requestId: requestId,
                     itemName: '',
-                    itemType: 'Electronics',
+                    itemType: ItemType.Electronics,
                     description: '',
                     price: '',
                     width: '',
@@ -179,8 +198,8 @@ const CreateItem = ({ requestId, onItemAdded }) => {
                         required
                     >
                         {itemTypes.map(type => (
-                            <option key={type} value={type}>
-                                {type}
+                            <option key={type.value} value={type.value}>
+                                {type.label}
                             </option>
                         ))}
                     </select>
@@ -298,6 +317,7 @@ const CreateItem = ({ requestId, onItemAdded }) => {
                     {isSubmitting ? 'Adding Item...' : 'Add Item'}
                 </button>
             </form>
+
         </div>
     );
 };
