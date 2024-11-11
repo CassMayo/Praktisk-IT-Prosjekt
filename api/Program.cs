@@ -81,9 +81,6 @@ builder.Services.AddAuthorization(options =>
         policy.RequireClaim("Role", "Admin"));
 });
 
-// Register authorization handlers
-builder.Services.AddScoped<IAuthorizationHandler, RoleHandler>();
-
 // Serilog configuration for logging
 var loggerConfiguration = new LoggerConfiguration()
     .MinimumLevel.Information()

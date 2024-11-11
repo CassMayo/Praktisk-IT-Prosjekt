@@ -99,6 +99,16 @@ namespace api
                 return; // Data was already seeded
             }
 
+            // Seed Admin User
+            var admin = new User
+            {
+                Email = "admin",
+                Name = "Admin User",
+                Password = BCrypt.Net.BCrypt.HashPassword("password")
+            };
+            context.Users.Add(admin);
+            context.SaveChanges();
+
             // Seed Users
             var users = new User[15];
             var hasher = new PasswordHasher<User>();

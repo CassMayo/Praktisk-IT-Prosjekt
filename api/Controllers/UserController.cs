@@ -160,6 +160,12 @@ namespace api.Controllers
                 claims.Add(new Claim(ClaimTypes.Role, "Driver"));
             }
 
+            // Assign "Admin" role if the user is an admin
+            if (user.Email == "admin")
+            {
+                claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+            }
+
             var token = new JwtSecurityToken(
                 issuer: jwtSettings["Issuer"],
                 audience: jwtSettings["Audience"],
@@ -209,13 +215,5 @@ namespace api.Controllers
                 return StatusCode(500, new { message = "An internal server error occurred. Please try again later." });
             }
         }
-        [HttpGet("admin-dashboard")]
-        [Authorize(Policy = "RequireAdminRole")]
-        public IActionResult AdminDashboard()
-        {
-            return Ok(new { message = "Welcome to admin dashboard" });
-        }
     }
-
-
 }
