@@ -1,13 +1,29 @@
+// AddItemModal.jsx
+
 import React from 'react';
 import CreateItem from '../CreateItem';
 import './AddItemModal.css';
 
-const AddItemModal = ({ show, onHide, requestId, onItemAdded }) => {
+const AddItemModal = ({ 
+    show, 
+    onHide, 
+    requestId, 
+    onItemAdded,
+    onStatusChange 
+}) => {
+    // Don't render modal if 'show' prop is false
     if (!show) return null;
 
+    // Prevent click event from bubbling up and closing the modal when clicking inside the content area
     const handleContentClick = (e) => {
-        // Prevent clicks inside the modal from closing it
         e.stopPropagation();
+    };
+
+    // Handle item addition and update the status to "Pending" (status code 1) if needed
+    const handleItemAdded = (item) => {
+        onItemAdded(item);
+        onStatusChange?.(1); // Update status to Pending when item is added
+        onHide(); // Close modal after item is added
     };
 
     return (
@@ -18,9 +34,11 @@ const AddItemModal = ({ show, onHide, requestId, onItemAdded }) => {
                 onClick={handleContentClick}
             >
                 <div className="modal-header">
-                    <button
+                    <h2>Add Item</h2>
+                    <button 
                         className="modal-close"
                         onClick={onHide}
+                        aria-label="Close"
                     >
                         &times;
                     </button>
@@ -28,10 +46,7 @@ const AddItemModal = ({ show, onHide, requestId, onItemAdded }) => {
                 <div className="modal-form">
                     <CreateItem
                         requestId={requestId}
-                        onItemAdded={(item) => {
-                            onItemAdded(item);
-                            onHide();
-                        }}
+                        onItemAdded={handleItemAdded}
                     />
                 </div>
             </div>

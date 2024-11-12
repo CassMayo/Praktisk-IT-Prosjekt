@@ -1,49 +1,57 @@
 import React, { useState } from 'react';
 import './OrderDetailsCard.css';
 
-const ItemCard = ({ item, onEditItem }) => (
-    <div className="item-card">
-        <div className="item-card-inner">
-            <div className="item-image-container">
-                <div className="item-actions">
-                    <button 
-                        className="btn-edit-item"
-                        onClick={() => onEditItem(item)}
-                    >
-                        Edit
-                    </button>
+const ItemCard = ({ item, onEditItem }) => {
+    const imageUrl = item.image 
+        ? `http://localhost:5078${item.image}` 
+        : '/api/placeholder/200/150';
+
+    return (
+        <div className="item-card">
+            <div className="item-card-inner">
+                <div className="item-image-container">
+                    <img
+                        src={imageUrl}
+                        alt={item.itemName}
+                        className="item-image" 
+                    />
                 </div>
-                <img 
-                    src={item.imageUrl || "/api/placeholder/200/150"} 
-                    alt={item.name} 
-                    className="item-image"
-                />
-            </div>
-            <div className="item-info">
-                <div className="item-dimensions">
-                    {item.width || "50"} x {item.height || "50"} x {item.depth || "50"} cm
-                </div>
-                <div className="item-weight">
-                    {item.weight || "70"} KG
+                <div className="item-info">
+                    <div className="item-dimensions">
+                        {item.width || "50"} x {item.height || "50"} x {item.depth || "50"} cm
+                    </div>
+                    <div className="item-weight">
+                        {item.weight || "70"} KG
+                    </div>
+                    {onEditItem && (
+                        <div>
+                            <button onClick={() => onEditItem(item)}>
+                                Edit
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
-    </div>
-);
+    );
+};
 
-const OrderDetailsCard = ({ 
-    orderData, 
-    items, 
-    onAddItem, 
-    onSwoopAway, 
-    isLoading, 
+const OrderDetailsCard = ({
+    orderData,
+    items,
+    onAddItem,
+    onSaveDraft,
+    onPublish,
+    isLoading,
     userOrderCount,
-    onEditRequest, // Prop for opening the edit request modal
-    onEditItem 
+    onEditRequest,
+    onEditItem
 }) => {
     const [showItems, setShowItems] = useState(true);
+    
+    // Keep status as Draft if no items, otherwise it's Pending
+    const isDraft = !items || items.length === 0;
 
-    // Format dates for display (day and month)
     const formatDate = (date) => {
         return date ? new Date(date).toLocaleString('en-SE', {
             day: 'numeric',
@@ -56,47 +64,60 @@ const OrderDetailsCard = ({
             <div className="order-card-header">
                 <div className="order-info">
                     <h3 className="order-number">Your Order #{userOrderCount}</h3>
-                    <span className="status-badge">Draft</span>
-                    <button 
-                        className="btn-edit-request"
-                        onClick={onEditRequest} // Call onEditRequest here to open the modal
-                    >
-                        Edit request
-                    </button>
+                    <span className="status-badge">
+                        {isDraft ? "Draft" : "Pending"}
+                    </span>
+                    {isDraft && (
+                        <button
+                            className="btn-edit-request"
+                            onClick={onEditRequest}
+                        >
+                            Edit request
+                        </button>
+                    )}
                 </div>
                 <div className="order-actions">
-                    <button className="btn-add-item" onClick={onAddItem}>
-                        Add Item
-                    </button>
+                    {isDraft && (
+                        <button
+                            className="btn-add-item"
+                            onClick={onAddItem}
+                        >
+                            Add Item
+                        </button>
+                    )}
                 </div>
             </div>
 
             <div className="items-section">
-                <div className="items-header">
-                    <div className="packages-count">
-                        <div className="packages-icon">📦</div>
-                        <span>{items.length} packages</span>
-                    </div>
-                    <button 
-                        className="btn-toggle"
-                        onClick={() => setShowItems(!showItems)}
-                    >
-                        {showItems ? 'Hide Items' : 'Show Items'}
-                    </button>
-                </div>
-
-                {showItems && items.length > 0 && (
-                    <div className="items-container">
-                        <div className="items-grid">
-                            {items.map((item, index) => (
-                                <ItemCard 
-                                    key={index} 
-                                    item={item}
-                                    onEditItem={onEditItem}
-                                />
-                            ))}
+                {items && items.length > 0 && (
+                    <>
+                        <div className="items-header">
+                            <div className="packages-count">
+                                <div className="packages-icon">📦</div>
+                                <span>{items.length} packages</span>
+                            </div>
+                            <button
+                                className="btn-toggle"
+                                onClick={() => setShowItems(!showItems)}
+                            >
+                                {showItems ? 'Hide Items' : 'Show Items'}
+                            </button>
                         </div>
-                    </div>
+
+                        {showItems && (
+                            <div className="items-container">
+                                <div className="items-grid">
+                                    {items.map((item, index) => (
+                                        <ItemCard
+                                            key={index}
+                                            item={item}
+                                            onEditItem={isDraft ? onEditItem : undefined}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+                    </>
                 )}
             </div>
 
@@ -127,13 +148,23 @@ const OrderDetailsCard = ({
                     </div>
                 )}
 
-                <button 
-                    className="btn-swoop"
-                    onClick={onSwoopAway}
-                    disabled={isLoading}
-                >
-                    {isLoading ? 'Processing...' : items.length > 0 ? 'Publish' : 'Save Draft'}
-                </button>
+                {isDraft ? (
+                    <button
+                        className="btn-swoop"
+                        onClick={onSaveDraft}
+                        disabled={isLoading}
+                    >
+                        {isLoading ? 'Saving...' : 'Save as Draft'}
+                    </button>
+                ) : (
+                    <button
+                        className="btn-swoop"
+                        onClick={onPublish}
+                        disabled={isLoading || items.length === 0}
+                    >
+                        {isLoading ? 'Processing...' : 'Submit Order'}
+                    </button>
+                )}
             </div>
         </div>
     );

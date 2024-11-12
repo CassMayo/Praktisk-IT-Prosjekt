@@ -5,7 +5,10 @@ namespace api.DAL.Models
 {
     public class AppDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
+        public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { 
+            //Database.EnsureDeleted();
+            //Database.EnsureCreated();
+        }
 
         // DbSets for each model
         public DbSet<User> Users { get; set; }  // Users table

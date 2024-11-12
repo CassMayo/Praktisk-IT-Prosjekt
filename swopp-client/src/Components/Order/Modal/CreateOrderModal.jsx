@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import './CreateOrderModal.css';
 
@@ -64,9 +65,9 @@ const CreateOrderModal = ({ show, onHide, onSubmit, isLoading }) => {
                     </div>
 
                     <div className="form-group">
-                        <label>Earliest date*</label>
+                        <label>Earliest Date *</label>
                         <input
-                            type="date" // Changed to 'date' instead of 'datetime-local'
+                            type="date"
                             value={formData.anytimeScheduled ? '' : formData.scheduledAt}
                             onChange={(e) =>
                                 setFormData((prev) => ({
@@ -94,9 +95,9 @@ const CreateOrderModal = ({ show, onHide, onSubmit, isLoading }) => {
                     </div>
 
                     <div className="form-group">
-                        <label>Latest date</label>
+                        <label>Latest Date</label>
                         <input
-                            type="date" // Changed to 'date' instead of 'datetime-local'
+                            type="date"
                             value={formData.anytimeAlternate ? '' : formData.alternateDate}
                             onChange={(e) =>
                                 setFormData((prev) => ({

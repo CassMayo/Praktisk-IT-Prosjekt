@@ -192,7 +192,8 @@ namespace api
                         Image = $"https://example.com/images/{itemName.Replace(" ", "").ToLower()}{i + 1}.jpg",
                         Width = random.Next(1, 100),
                         Height = random.Next(1, 100),
-                        Depth = random.Next(1, 100)
+                        Depth = random.Next(1, 100),
+                        Weight = random.Next(1, 100)
                     };
                     context.Items.Add(item);
                 }

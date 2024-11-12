@@ -15,6 +15,7 @@ import CreateItem from "./Components/Order/CreateItem";
 import OrderDashboard from "./Components/Order/OrderDashboard";
 import UserOrders from "./Components/customHooks/UserOrders";
 import MyOrder from "./Components/Order/MyOrder";
+import OrderSuccessPage from "./Components/Order/OrderSuccessPage";
 
 
 
@@ -38,6 +39,7 @@ const App = () => {
           <Route path="/order-dashboard" element={<OrderDashboard />} />
           <Route path="/user-orders" element={<UserOrders />} />
           <Route path="/my-order" element={<MyOrder />} />
+          <Route path="/Home/Order-success" element={<OrderSuccessPage />} />
         </Routes>
       </Router>
     </UserProvider>

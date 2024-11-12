@@ -6,5 +6,6 @@ namespace api.DAL.DTOs.Request
         public string? DropoffLocation { get; set; }
         public string? Description { get; set; }
         public DateTime? ScheduledAt { get; set; }
+        public DateTime? AlternateDate { get; set; }
     }
 }
