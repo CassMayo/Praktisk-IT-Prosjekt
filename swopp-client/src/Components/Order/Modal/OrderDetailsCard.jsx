@@ -1,39 +1,16 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './OrderDetailsCard.css';
+import ItemCard from './ItemCard';
+import { RequestStatus } from '../Constants/RequestStatus';
 
-const ItemCard = ({ item, onEditItem }) => {
-    const imageUrl = item.image 
-        ? `http://localhost:5078${item.image}` 
-        : '/api/placeholder/200/150';
-
-    return (
-        <div className="item-card">
-            <div className="item-card-inner">
-                <div className="item-image-container">
-                    <img
-                        src={imageUrl}
-                        alt={item.itemName}
-                        className="item-image" 
-                    />
-                </div>
-                <div className="item-info">
-                    <div className="item-dimensions">
-                        {item.width || "50"} x {item.height || "50"} x {item.depth || "50"} cm
-                    </div>
-                    <div className="item-weight">
-                        {item.weight || "70"} KG
-                    </div>
-                    {onEditItem && (
-                        <div>
-                            <button onClick={() => onEditItem(item)}>
-                                Edit
-                            </button>
-                        </div>
-                    )}
-                </div>
-            </div>
-        </div>
-    );
+const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+    });
 };
 
 const OrderDetailsCard = ({
@@ -45,18 +22,31 @@ const OrderDetailsCard = ({
     isLoading,
     userOrderCount,
     onEditRequest,
-    onEditItem
+    onItemUpdate,
+    onItemDelete,
+    status = RequestStatus.Draft
 }) => {
     const [showItems, setShowItems] = useState(true);
-    
-    // Keep status as Draft if no items, otherwise it's Pending
-    const isDraft = !items || items.length === 0;
+    const isDraft = status === RequestStatus.Draft;
 
-    const formatDate = (date) => {
-        return date ? new Date(date).toLocaleString('en-SE', {
-            day: 'numeric',
-            month: 'short',
-        }) : 'Anytime';
+    useEffect(() => {
+        console.log('Items received in OrderDetailsCard:', items); // Debug log
+    }, [items]);
+
+    const handlePublish = () => {
+        if (!items || items.length === 0) {
+            alert('Please add at least one item before publishing');
+            return;
+        }
+        onPublish();
+    };
+
+    const handleAddItem = () => {
+        if (isDraft) {
+            onAddItem();
+        } else {
+            alert("Items can only be added when the order is in Draft status");
+        }
     };
 
     return (
@@ -80,7 +70,7 @@ const OrderDetailsCard = ({
                     {isDraft && (
                         <button
                             className="btn-add-item"
-                            onClick={onAddItem}
+                            onClick={handleAddItem}
                         >
                             Add Item
                         </button>
@@ -88,38 +78,38 @@ const OrderDetailsCard = ({
                 </div>
             </div>
 
-            <div className="items-section">
-                {items && items.length > 0 && (
-                    <>
-                        <div className="items-header">
-                            <div className="packages-count">
-                                <div className="packages-icon">📦</div>
-                                <span>{items.length} packages</span>
-                            </div>
-                            <button
-                                className="btn-toggle"
-                                onClick={() => setShowItems(!showItems)}
-                            >
-                                {showItems ? 'Hide Items' : 'Show Items'}
-                            </button>
+            {items && items.length > 0 && (
+                <div className="items-section">
+                    <div className="items-header">
+                        <div className="packages-count">
+                            <div className="packages-icon">📦</div>
+                            <span>{items.length} packages</span>
                         </div>
+                        <button
+                            className="btn-toggle"
+                            onClick={() => setShowItems(!showItems)}
+                        >
+                            {showItems ? 'Hide Items' : 'Show Items'}
+                        </button>
+                    </div>
 
-                        {showItems && (
-                            <div className="items-container">
-                                <div className="items-grid">
-                                    {items.map((item, index) => (
-                                        <ItemCard
-                                            key={index}
-                                            item={item}
-                                            onEditItem={isDraft ? onEditItem : undefined}
-                                        />
-                                    ))}
-                                </div>
+                    {showItems && (
+                        <div className="items-container">
+                            <div className="items-grid">
+                                {items.map((item) => (
+                                    <ItemCard
+                                        key={item.itemId}
+                                        item={item}
+                                        isDraft={isDraft}
+                                        onItemUpdated={onItemUpdate}
+                                        onItemDeleted={onItemDelete}
+                                    />
+                                ))}
                             </div>
-                        )}
-                    </>
-                )}
-            </div>
+                        </div>
+                    )}
+                </div>
+            )}
 
             <div className="location-details">
                 <div className="location-point">
@@ -148,22 +138,24 @@ const OrderDetailsCard = ({
                     </div>
                 )}
 
-                {isDraft ? (
-                    <button
-                        className="btn-swoop"
-                        onClick={onSaveDraft}
-                        disabled={isLoading}
-                    >
-                        {isLoading ? 'Saving...' : 'Save as Draft'}
-                    </button>
-                ) : (
-                    <button
-                        className="btn-swoop"
-                        onClick={onPublish}
-                        disabled={isLoading || items.length === 0}
-                    >
-                        {isLoading ? 'Processing...' : 'Submit Order'}
-                    </button>
+                {isDraft && (
+                    <div className="button-container">
+                        <button
+                            className="btn-swoop btn-draft"
+                            onClick={onSaveDraft}
+                            disabled={isLoading}
+                        >
+                            {isLoading ? 'Saving...' : 'Save as Draft'}
+                        </button>
+                        <button
+                            className="btn-swoop btn-publish"
+                            onClick={handlePublish}
+                            disabled={isLoading || !items || items.length === 0}
+                            title={!items || items.length === 0 ? 'Add at least one item to publish' : ''}
+                        >
+                            {isLoading ? 'Processing...' : 'Publish Order'}
+                        </button>
+                    </div>
                 )}
             </div>
         </div>

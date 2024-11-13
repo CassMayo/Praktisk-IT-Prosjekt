@@ -19,7 +19,7 @@ const EditRequestModal = ({ show, onHide, onSubmit, isLoading, initialData }) =>
             scheduledAt: formData.anytimeScheduled ? null : formData.scheduledAt,
             alternateDate: formData.anytimeAlternate ? null : formData.alternateDate,
         };
-        onSubmit(dataToSubmit);
+        onSubmit(dataToSubmit); 
     };
 
     if (!show) return null;

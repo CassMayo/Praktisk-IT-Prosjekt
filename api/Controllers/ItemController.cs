@@ -222,6 +222,10 @@ namespace api.Controllers
 
                     item.Image = $"/api/item/image/{fileName}";
                 }
+                else
+                {
+                    // Keep the existing image
+                }
 
                 // Update other properties
                 item.ItemName = itemDTO.ItemName;
@@ -244,7 +248,6 @@ namespace api.Controllers
                 return StatusCode(500, new { message = "An error occurred while updating the item." });
             }
         }
-
         [HttpDelete("{id}")]
         [Authorize]
         public async Task<IActionResult> DeleteItem(int id)
@@ -324,7 +327,7 @@ namespace api.Controllers
                 return StatusCode(500, new { message = "An error occurred while fetching items." });
             }
         }
-         [HttpGet("{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetItem(int id)
         {
             try

@@ -1,205 +1,209 @@
 import React, { useState, useContext } from 'react';
 import { UserContext } from '../../Context/UserContext';
-import '../Modal/AddItemModal.css';
-
-const ItemType = {
-    Electronics: 0,
-    Clothing: 1,
-    Furniture: 2,
-    Books: 3,
-    Other: 4
-};
+//import './EditItemModal.css';
 
 const EditItemModal = ({ show, onHide, item, onItemUpdated, order }) => {
     const { token } = useContext(UserContext);
-    const [isSubmitting, setIsSubmitting] = useState(false);
-    const [error, setError] = useState(null);
-    const [imageFile, setImageFile] = useState(null);
-    const [imagePreview, setImagePreview] = useState(item?.image || null);
-    
-    const [itemData, setItemData] = useState({
-        itemName: item?.itemName || '',
-        itemType: item?.itemType || ItemType.Electronics,
-        description: item?.description || '',
-        price: item?.price || '',
-        width: item?.width || '',
-        height: item?.height || '',
-        depth: item?.depth || '',
-        weight: item?.weight || ''
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const [formData, setFormData] = useState({
+        itemName: item.itemName || '',
+        itemType: item.itemType || '',
+        description: item.description || '',
+        price: item.price || '',
+        width: item.width || '',
+        height: item.height || '',
+        depth: item.depth || '',
+        weight: item.weight || '',
+        imageFile: null,
     });
-
-    // Check if edit is allowed
-    if (order?.status !== 0) {
-        return (
-            <div className="modal-overlay" onClick={onHide}>
-                <div className="modal-content" onClick={e => e.stopPropagation()}>
-                    <div className="modal-header">
-                        <h2>Cannot Edit Item</h2>
-                        <button className="modal-close" onClick={onHide}>&times;</button>
-                    </div>
-                    <div className="modal-body">
-                        <p>Items can only be edited when the order is in Draft status.</p>
-                    </div>
-                    <div className="modal-actions">
-                        <button className="btn-cancel" onClick={onHide}>Close</button>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setImageFile(file);
-            // Create preview
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setImagePreview(reader.result);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setIsSubmitting(true);
-        setError(null);
+        setLoading(true);
+        setError('');
 
         try {
-            const formData = new FormData();
-            
-            // Append all item data
-            Object.keys(itemData).forEach(key => {
-                if (itemData[key] !== null && itemData[key] !== '') {
-                    formData.append(key, itemData[key]);
-                }
-            });
-            
-            // Append image file if selected
-            if (imageFile) {
-                formData.append('imageFile', imageFile);
+            const data = new FormData();
+            data.append('requestId', item.requestId);
+            data.append('itemName', formData.itemName);
+            data.append('itemType', formData.itemType);
+            data.append('description', formData.description);
+            data.append('price', parseFloat(formData.price));
+            data.append('width', parseFloat(formData.width));
+            data.append('height', parseFloat(formData.height));
+            data.append('depth', parseFloat(formData.depth));
+            data.append('weight', parseFloat(formData.weight));
+            if (formData.imageFile) {
+                data.append('imageFile', formData.imageFile);
             }
 
-            // Add required IDs
-            formData.append('id', item.id);
-            formData.append('requestId', item.requestId);
-
-            const response = await fetch(`http://localhost:5078/api/item/${item.id}`, {
+            const response = await fetch(`http://localhost:5078/api/item/${item.itemId}`, {
                 method: 'PUT',
                 headers: {
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${token}`,
                 },
-                body: formData
+                body: data,
             });
 
-            if (response.ok) {
-                const updatedItem = await response.json();
-                onItemUpdated(updatedItem);
-                onHide();
-            } else {
+            if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'Failed to update item');
             }
-        } catch (error) {
-            setError(error.message);
+
+            const updatedItem = await response.json();
+            onItemUpdated(updatedItem);
+            onHide();
+        } catch (err) {
+            setError(err.message);
         } finally {
-            setIsSubmitting(false);
+            setLoading(false);
         }
+    };
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData((prev) => ({
+            ...prev,
+            [name]: value,
+        }));
+    };
+
+    const handleFileChange = (e) => {
+        setFormData((prev) => ({
+            ...prev,
+            imageFile: e.target.files[0],
+        }));
     };
 
     if (!show) return null;
 
     return (
         <div className="modal-overlay" onClick={onHide}>
-            <div className="modal-content" onClick={e => e.stopPropagation()}>
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
                 <div className="modal-header">
                     <h2>Edit Item</h2>
                     <button className="modal-close" onClick={onHide}>&times;</button>
                 </div>
 
-                {error && (
-                    <div className="alert alert-danger">
-                        {error}
-                    </div>
-                )}
+                {error && <div className="error-message">{error}</div>}
 
-                <form onSubmit={handleSubmit} className="modal-form">
-                    {/* Existing form fields... */}
-                    
-                    {/* Replace image URL input with file upload */}
+                <form onSubmit={handleSubmit} className="edit-item-form">
                     <div className="form-group">
-                        <label>Item Image</label>
+                        <label htmlFor="itemName">Item Name *</label>
                         <input
-                            type="file"
-                            accept="image/*"
-                            onChange={handleImageChange}
-                            className="image-input"
+                            id="itemName"
+                            name="itemName"
+                            type="text"
+                            value={formData.itemName}
+                            onChange={handleInputChange}
+                            required
                         />
-                        {imagePreview && (
-                            <div className="image-preview">
-                                <img src={imagePreview} alt="Preview" />
-                            </div>
-                        )}
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="itemType">Item Type *</label>
+                        <select
+                            id="itemType"
+                            name="itemType"
+                            value={formData.itemType}
+                            onChange={handleInputChange}
+                            required
+                        >
+                            <option value="">Select Item Type</option>
+                            <option value="Electronics">Electronics</option>
+                            <option value="Clothing">Clothing</option>
+                            <option value="Furniture">Furniture</option>
+                            <option value="Books">Books</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="description">Description</label>
+                        <textarea
+                            id="description"
+                            name="description"
+                            value={formData.description}
+                            onChange={handleInputChange}
+                            rows="3"
+                        />
                     </div>
 
                     <div className="form-row">
-                        <div className="form-group col-md-4">
-                            <label>Width (cm) *</label>
+                        <div className="form-group">
+                            <label htmlFor="price">Price ($) *</label>
                             <input
+                                id="price"
+                                name="price"
                                 type="number"
-                                value={itemData.width}
-                                onChange={(e) => setItemData(prev => ({
-                                    ...prev,
-                                    width: e.target.value
-                                }))}
-                                step="0.1"
+                                step="0.01"
                                 min="0"
+                                value={formData.price}
+                                onChange={handleInputChange}
                                 required
                             />
                         </div>
-                        <div className="form-group col-md-4">
-                            <label>Height (cm) *</label>
-                            <input
-                                type="number"
-                                value={itemData.height}
-                                onChange={(e) => setItemData(prev => ({
-                                    ...prev,
-                                    height: e.target.value
-                                }))}
-                                step="0.1"
-                                min="0"
-                                required
-                            />
-                        </div>
-                        <div className="form-group col-md-4">
-                            <label>Depth (cm) *</label>
-                            <input
-                                type="number"
-                                value={itemData.depth}
-                                onChange={(e) => setItemData(prev => ({
-                                    ...prev,
-                                    depth: e.target.value
-                                }))}
-                                step="0.1"
-                                min="0"
-                                required
-                            />
+
+                        <div className="dimensions-group">
+                            <label>Dimensions (cm) *</label>
+                            <div className="dimensions-inputs">
+                                <input
+                                    name="width"
+                                    type="number"
+                                    min="0"
+                                    step="0.1"
+                                    value={formData.width}
+                                    onChange={handleInputChange}
+                                    placeholder="Width"
+                                    required
+                                />
+                                <input
+                                    name="height"
+                                    type="number"
+                                    min="0"
+                                    step="0.1"
+                                    value={formData.height}
+                                    onChange={handleInputChange}
+                                    placeholder="Height"
+                                    required
+                                />
+                                <input
+                                    name="depth"
+                                    type="number"
+                                    min="0"
+                                    step="0.1"
+                                    value={formData.depth}
+                                    onChange={handleInputChange}
+                                    placeholder="Depth"
+                                    required
+                                />
+                            </div>
                         </div>
                     </div>
 
                     <div className="form-group">
-                        <label>Weight (kg) *</label>
+                        <label htmlFor="weight">Weight (kg) *</label>
                         <input
+                            id="weight"
+                            name="weight"
                             type="number"
-                            value={itemData.weight}
-                            onChange={(e) => setItemData(prev => ({
-                                ...prev,
-                                weight: e.target.value
-                            }))}
-                            step="0.1"
                             min="0"
+                            step="0.1"
+                            value={formData.weight}
+                            onChange={handleInputChange}
                             required
+                        />
+                    </div>
+
+                    <div className="form-group">
+                        <label htmlFor="image">New Image (Optional)</label>
+                        <input
+                            id="image"
+                            name="imageFile"
+                            type="file"
+                            onChange={handleFileChange}
+                            accept="image/*"
                         />
                     </div>
 
@@ -207,8 +211,8 @@ const EditItemModal = ({ show, onHide, item, onItemUpdated, order }) => {
                         <button type="button" className="btn-cancel" onClick={onHide}>
                             Cancel
                         </button>
-                        <button type="submit" className="btn-submit" disabled={isSubmitting}>
-                            {isSubmitting ? 'Saving...' : 'Save Changes'}
+                        <button type="submit" className="btn-submit" disabled={loading}>
+                            {loading ? 'Saving...' : 'Save Changes'}
                         </button>
                     </div>
                 </form>
