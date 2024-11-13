@@ -1,177 +1,215 @@
-body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-  overflow: hidden;
-}
-
-h1 {
-  color: var(--secondary-text-color); /* Set the color to black */
-  font-size: 2.5rem;
-  font-weight: bold;
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-h2 {
-  color: var(--main-text-color);
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 20px; /* Adjust margin as needed */
-  text-align: left;
-}
-
-/* Container for the order form and debug info */
 .main-container {
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  margin: 50px auto;
   flex-direction: column;
-  flex-direction: row;
-  max-width: 90%; /* Increase the max-width to make the form wider */
-  height: calc(100vh - 75px);
+  justify-content: flex-start; /* Aligns items to the top */
+  align-items: center;
+  gap: 10px;
+  min-height: calc(100vh - 75px);
+  padding-top: 40px; /* Add top padding */
+  padding-bottom: 20px;  
+  position: relative;
 }
 
-/* Debug info styling */
-.debug-container {
-  background-color: #f0f0f0;
-  display: flex;
-  flex-direction: column;
-  padding: 10px;
-  border-radius: 10px;
-  font-size: 14px;
-  color: #333;
-  width: 250px; /* Fixed width for the debug info box */
-  margin-top: 120px;
-}
-
-/* Form container styling */
-.order-container {
+.order-title-container {
+  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
-  padding: 30px 40px 40px; /* Add padding to the container */
-}
-
-/* Form styling */
-.order-form {
-  display: flex;
-  flex-direction: column;
-  background-color: var(--secondary-background-color);
-  padding: 40px;
-  padding-top: 5px;
-  width: 100%;
-  max-width: 600px; /* Set a max-width for the form */
-  box-sizing: border-box;
-  border-radius: 10px;
-}
-
-/* Form group styling */
-.form-group {
-  margin-bottom: 10px;
-  display: flex;
-  flex-direction: column;
-}
-
-/* Label styling */
-.form-group label {
-  font-weight: bold;
-  color:#333;
-  margin-bottom: 5px;
-  text-align: left;
-}
-
-/* Input and textarea styling */
-.form-control {
-  width: 100%;
-  margin-bottom: 20px;
-  padding: 10px;
-  box-sizing: border-box;
-  margin: 10px 0;
-  border: 1px solid var(--primary-background-color);
+  justify-content: center;
+  text-align: center;
+  padding-top: 40px;
   border-radius: 8px;
-  color: var(--primary-text-color);
-  font-size: 1rem;
-  outline: none;
-  transition: background-color 0.2s ease;
-  background-color: rgba(188, 191, 235, 0.286);
 }
 
-.form-control:focus {
-  border-color: #007bff;
-  outline: none;
+.order-title {
+  color: white;
+  font-size: 2.5rem;
+  margin: 0;
 }
 
-/* Button styling */
-.btn-submit {
-  width: 100%;
-  padding: 10px;
-  box-sizing: border-box;
+.order-title h1 {
+  color: white;
+  font-size: 2.5rem;
+  margin: 0;
+}
+
+.btn-create {
   background-color: var(--primary-button-color);
   color: white;
   border: none;
+  padding: 12px 24px;
   border-radius: 8px;
-  font-size: 1rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  font-weight: bold;
+  transition: background-color 0.2s;
 }
 
-.btn-submit:hover {
+.btn-create:hover {
   background-color: var(--secondary-button-color);
 }
 
-/* Error message styling */
-.error-message {
-  color: #ff0000;
-  font-size: 14px;
-  margin-bottom: 10px;
+.btn-create:disabled {
+  background-color: #9ca3af;
+  cursor: not-allowed;
 }
 
-/* Link styling */
-.link {
-  color: #007bff;
-  text-decoration: underline;
+.order-container {
+  width: 100%;
+  max-width: 500px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: var(--secondary-background-color);
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+.order-card {
+  width: 100%;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 24px;
+}
+
+.order-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.order-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.order-number {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.status-badge {
+  background-color: rgba(37, 99, 235, 0.1);
+  color: #2563eb;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.875rem;
+}
+
+.order-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-add-item {
+  background-color: #22c55e;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
   cursor: pointer;
 }
 
-.link:hover {
-  color: #0056b3;
+.btn-swoop {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
-@media (max-width: 768px) {
-  .main-container {
-    flex-direction: column;
-    gap: 20px;
-    padding-top: 50px;
-    overflow-y: auto;
+.btn-edit-item {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 4px 8px;
+  cursor: pointer;
+  z-index: 1;
+}
+
+.btn-edit-item:hover {
+  background-color: #fff;
+}
+
+.item-image-wrapper {
+  position: relative;
+}
+
+.status-draft {
+  background-color: #ffd700;
+  color: #000;
+}
+
+.status-pending {
+  background-color: #87ceeb;
+  color: #000;
+}
+
+/* Location details */
+.location-point {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0;
+}
+
+.point {
+  width: 8px;
+  height: 8px;
+  background-color: #1f2937;
+  border-radius: 50%;
+}
+
+.connection-line {
+  width: 2px;
+  height: 24px;
+  background-color: #9ca3af;
+  margin-left: 3px;
+}
+
+/* Order info grid */
+.order-info-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.info-item label {
+  color: #6b7280;
+  font-size: 0.875rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+  .order-card-header {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
   }
 
-  .order-container {
-    width: 100%;
-    padding: 20px;
+  .order-actions {
+      width: 100%;
+      justify-content: space-between;
   }
 
-  .order-form {
-    padding: 40px;
-    gap: 5px;
-  }
-
-  .form-control {
-    max-width: 100%;
-    width: 100%;
-  }
-
-  .btn-submit {
-    max-width: 100%;
-  }
-
-  .debug-container {
-    display: none; /* Hide the debug container in mobile view */
+  .btn-add-item,
+  .btn-swoop {
+      flex: 1;
   }
 }

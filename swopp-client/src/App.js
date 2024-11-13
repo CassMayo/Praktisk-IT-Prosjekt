@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import MainIndex from "./Components/User/MainIndex";
 import Login from "./Components/User/Login/Login";
 import Register from "./Components/User/Register/Register";
@@ -12,6 +13,10 @@ import ProtectedRoute from "./Components/ProtectedComponent";
 import AllOrders from "./Components/Order/OrderDashboard";
 import CreateItem from "./Components/Order/CreateItem";
 import OrderDashboard from "./Components/Order/OrderDashboard";
+import UserOrders from "./Components/customHooks/UserOrders";
+import MyOrder from "./Components/Order/MyOrder";
+import OrderSuccessPage from "./Components/Order/OrderSuccessPage";
+
 
 
 
@@ -32,6 +37,9 @@ const App = () => {
           <Route path="/all-orders" element={<AllOrders />} />
           <Route path="/create-item" element={<CreateItem />} />
           <Route path="/order-dashboard" element={<OrderDashboard />} />
+          <Route path="/user-orders" element={<UserOrders />} />
+          <Route path="/my-order" element={<MyOrder />} />
+          <Route path="/Home/Order-success" element={<OrderSuccessPage />} />
         </Routes>
       </Router>
     </UserProvider>

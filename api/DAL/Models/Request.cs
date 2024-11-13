@@ -7,28 +7,29 @@ namespace api.DAL.Models
     public class Request
     {
         [Key]
-        public int RequestId { get; set; }  // Primary Key
+        public int RequestId { get; set; }
 
         [ForeignKey("Sender")]
-        public required string SenderEmail { get; set; }  // Foreign Key to User (Sender)
+        public required string SenderEmail { get; set; }
 
         [ForeignKey("Driver")]
-        public string? DriverEmail { get; set; }  // Foreign Key to User (nullable for when not assigned)
+        public string? DriverEmail { get; set; }
 
         public required string PickupLocation { get; set; }
-        
-        public required string DropoffLocation { get; set; }
-        
-        public string? Description { get; set; }
-        
-        public RequestStatus Status { get; set; } = RequestStatus.Pending;  // Default status pending
-        
-        public DateTime? ScheduledAt { get; set; }  // Optional: specifies when the pickup should be carried out
-        
-        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;  // Creation timestamp with default
 
-        // Navigation properties
-        public virtual required User Sender { get; set; }  // Navigation property to Sender
-        public virtual User? Driver { get; set; }  // Navigation property to Driver (nullable)
+        public required string DropoffLocation { get; set; }
+
+        public string? Description { get; set; }
+
+        public RequestStatus Status { get; set; } = RequestStatus.Draft;  // Changed default to Draft
+
+        public DateTime? ScheduledAt { get; set; }  // Earliest date
+
+        public DateTime? AlternateDate { get; set; }  // Latest date
+
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+        public virtual required User Sender { get; set; }
+        public virtual User? Driver { get; set; }
     }
 }

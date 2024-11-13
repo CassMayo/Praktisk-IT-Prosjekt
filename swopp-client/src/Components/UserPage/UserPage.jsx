@@ -2,14 +2,13 @@ import React, { useContext, useState } from "react";
 import { UserContext } from "../Context/UserContext";
 import { useNavigate } from "react-router-dom";
 import NavBar from "../Navigation/NavBar";
-import UserOrders from "../customHooks/UserOrders";
+import MyOrder from "../Order/MyOrder";
 import usePfp from "../customHooks/Pfp";
-import './UserPage.css'; // Import the new UserPage.css for styling
+import './UserPage.css';
 
 const UserPage = () => {
     const { user, token } = useContext(UserContext);
     const navigate = useNavigate();
-    const { orders, loading, error } = UserOrders();
     const { Pfp, uploading, uploadError } = usePfp();
     const [profilePicture, setProfilePicture] = useState(user?.Pfp);
 
@@ -25,39 +24,59 @@ const UserPage = () => {
         }
     };
 
+    if (!user) {
+        navigate('/login');
+        return null;
+    }
+
     return (
         <>
             <NavBar />
             <div className="userpage-container">
-                <div className="profile-section">
-                    <img src={profilePicture || user?.Pfp} alt={user?.name} className="profile-picture" /> 
-                    <input type="file" onChange={handlePfpChange} disabled={uploading} />
-                    {uploadError && <p className="error-message">{uploadError}</p>}
-                    <p className="profile-name">Profile Name: {user?.name}</p>
-                    <p className="profile-email">Email: {user?.email}</p>
-                </div>
-                <div className="orders-section">
-                    <div className="orders-header">
-                        <h2 className="orders-title">Your Orders</h2>
-                        <button 
-                            onClick={() => navigate('/order')}
-                            className="btn-button">
-                            Create New Order
-                        </button>
-                    </div>
-                    <div className="orders-list">
-                        {loading && <p>Loading...</p>}
-                        {error && <p>Error: {error}</p>}
-                        {orders.length === 0 && !loading && <p>No orders found</p>}
-                        {orders.map(order => (
-                            <div key={order.requestId} className="order">
-                                <h3>Order ID: {order.requestId}</h3>
-                                <p>Pickup Location: {order.pickupLocation}</p>
-                                <p>Dropoff Location: {order.dropoffLocation}</p>
-                                <p>Scheduled At: {new Date(order.scheduledAt).toLocaleString()}</p>
-                                <p>Description: {order.description}</p>
+                <div className="user-content-wrapper">
+                    {/* Profile Section */}
+                    <div className="profile-section">
+                        <div className="profile-card">
+                            <div className="profile-header">
+                                <div className="profile-picture-container">
+                                    <img 
+                                        src={profilePicture || user?.Pfp} 
+                                        alt={user?.name} 
+                                        className="profile-picture"
+                                    />
+                                    <label className="upload-button" htmlFor="profile-upload">
+                                        <input
+                                            id="profile-upload"
+                                            type="file"
+                                            onChange={handlePfpChange}
+                                            disabled={uploading}
+                                            hidden
+                                        />
+                                        {uploading ? 'Uploading...' : 'Change Picture'}
+                                    </label>
+                                </div>
+                                {uploadError && (
+                                    <p className="error-message">{uploadError}</p>
+                                )}
                             </div>
-                        ))}
+                            <div className="profile-info">
+                                <h2>{user?.name}</h2>
+                                <p>{user?.email}</p>
+                            </div>
+                            <div className="profile-actions">
+                                <button
+                                    onClick={() => navigate('/order')}
+                                    className="create-order-button"
+                                >
+                                    Create New Order
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Orders Section */}
+                    <div className="orders-section">
+                        <MyOrder />
                     </div>
                 </div>
             </div>
@@ -66,4 +85,3 @@ const UserPage = () => {
 };
 
 export default UserPage;
-

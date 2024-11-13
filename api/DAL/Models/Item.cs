@@ -25,6 +25,7 @@ namespace api.DAL.Models
         public required float Height { get; set; }  // New property for item height
         public required float Depth { get; set; }   // New property for item depth
 
+        public required float Weight { get; set; }  // New property for item weight
         // Navigation property
         public virtual required Request Request { get; set; }  // Navigation property to Request
     }

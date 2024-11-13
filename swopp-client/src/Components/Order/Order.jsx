@@ -1,87 +1,142 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { UserContext } from '../Context/UserContext';
-import CreateItem from './CreateItem';
-import NavBar from '../Navigation/NavBar'; // Assuming you're using NavBar
-import './Order.css'; // Import the new Order.css for styling
+import CreateOrderModal from './Modal/CreateOrderModal';
+import AddItemModal from './Modal/AddItemModal';
+import OrderDetailsCard from './Modal/OrderDetailsCard';
+import { useNavigate } from 'react-router-dom';
+import './Order.css';
+
+const RequestStatus = {
+    Draft: 0,
+    Pending: 1,
+    Accepted: 2,
+    Completed: 3,
+    Cancelled: 4,
+    Lost: 5,
+};
 
 const Order = () => {
     const { user, token } = useContext(UserContext);
-    const [step, setStep] = useState(1); 
+    const [showCreateModal, setShowCreateModal] = useState(false);
+    const [showAddItemModal, setShowAddItemModal] = useState(false);
+    const [orderData, setOrderData] = useState(null);
     const [createdRequestId, setCreatedRequestId] = useState(null);
     const [items, setItems] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
-    const [orderData, setOrderData] = useState({
-        pickupLocation: '',
-        dropoffLocation: '',
-        scheduledAt: '',
-        description: ''
-    });
+    const navigate = useNavigate();
+    const [orders, setOrders] = useState([]);
+    const [userOrderCount, setUserOrderCount] = useState(0);
 
     useEffect(() => {
-        console.log('Current step:', step);
-        console.log('Created Request ID:', createdRequestId);
-    }, [step, createdRequestId]);
+        // Fetch orders here and set them in `orders` state
+        const fetchOrders = async () => {
+            try {
+                const response = await fetch('http://localhost:5078/api/request/user/' + encodeURIComponent(user.email), {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json',
+                    },
+                });
 
-    console.log('Rendering Order component with:', {
-        step,
-        createdRequestId,
-        orderData
-    });
+                if (!response.ok) throw new Error('Failed to fetch orders');
 
-    const handleInputChange = (e) => {
-        const { name, value } = e.target;
-        setOrderData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
+                const ordersData = await response.json();
+                setOrders(ordersData);
 
+                // Set the order count based on the number of orders fetched
+                setUserOrderCount(ordersData.length + 1); // Add 1 to show the next order number
+            } catch (error) {
+                console.error("Error fetching orders:", error);
+            }
+        };
 
-    const handleSubmitOrderDetails = async (e) => {
-        e.preventDefault();
-        console.log('Submit button clicked');
-
-        if (!orderData.pickupLocation || !orderData.dropoffLocation || !orderData.scheduledAt) {
-            alert('Please fill in all required fields');
-            return;
+        if (user && token) {
+            fetchOrders();
         }
+    }, [user, token]);
 
+    const handleCreateOrder = async (formData) => {
         setIsLoading(true);
-        console.log('Creating request...');
-
         try {
             const requestData = {
                 senderEmail: user.email,
-                pickupLocation: orderData.pickupLocation,
-                dropoffLocation: orderData.dropoffLocation,
-                scheduledAt: orderData.scheduledAt,
-                description: orderData.description || ''
+                pickupLocation: formData.pickupLocation,
+                dropoffLocation: formData.dropoffLocation,
+                scheduledAt: formData.scheduledAt,
+                alternateDate: formData.alternateDate,
+                description: formData.description || '',
+                status: RequestStatus.Draft,
             };
-
-            console.log('Request data:', requestData);
 
             const response = await fetch('http://localhost:5078/api/request', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
+                    'Authorization': `Bearer ${token}`,
                 },
-                body: JSON.stringify(requestData)
+                body: JSON.stringify(requestData),
             });
 
-            const responseData = await response.json();
-            console.log('Response:', responseData);
-
-            if (response.ok && responseData.requestId) {
-                console.log('Request created successfully, setting ID:', responseData.requestId);
+            if (response.ok) {
+                const responseData = await response.json();
                 setCreatedRequestId(responseData.requestId);
-                console.log('Moving to step 2');
-                setStep(2);
+                setOrderData({ ...formData, requestId: responseData.requestId });
+                setShowCreateModal(false);
             } else {
-                throw new Error(responseData.message || 'Failed to create request');
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to create order');
             }
         } catch (error) {
-            console.error('Error:', error);
+            alert(error.message);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handleAddItem = () => setShowAddItemModal(true);
+
+    const handleSaveDraft = async () => {
+        setIsLoading(true);
+        try {
+            const response = await fetch(`http://localhost:5078/api/request/${createdRequestId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(orderData),
+            });
+
+            if (response.ok) {
+                alert('Draft Saved');
+            } else {
+                throw new Error('Failed to save draft');
+            }
+        } catch (error) {
+            alert(error.message);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const handlePublish = async () => {
+        setIsLoading(true);
+        try {
+            const response = await fetch(`http://localhost:5078/api/request/${createdRequestId}/status`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify("Pending"),
+            });
+
+            if (response.ok) {
+                navigate('Order-success');
+            } else {
+                throw new Error('Failed to publish order');
+            }
+        } catch (error) {
             alert(error.message);
         } finally {
             setIsLoading(false);
@@ -89,110 +144,53 @@ const Order = () => {
     };
 
     return (
-        <>
-            <NavBar />
-            <div className="main-container">
-                <div className="debug-container">
-                    <p>Debug Info: {user?.name} </p>
-                    <p>Current Step: {step}</p>
-                    <p>Request ID: {createdRequestId || 'None'}</p>
-                    <p>Is Loading: {isLoading.toString()}</p>
-                </div>
-                <div className="order-container">
-                    <h1 className="order-title">Order Registration</h1>
-                    {step === 1 ? (
-                        <>
-                            <form onSubmit={handleSubmitOrderDetails} className="order-form">
-                            <h2 className="step-title">Step 1: Order Details</h2>
-                                <div className="form-group">
-                                    <label htmlFor="pickupLocation">Pickup Location *</label>
-                                    <input
-                                        type="text"
-                                        id="pickupLocation"
-                                        name="pickupLocation"
-                                        value={orderData.pickupLocation}
-                                        onChange={handleInputChange}
-                                        className="form-control"
-                                        required
-                                    />
-                                </div>
-                                
-                                <div className="form-group">
-                                    <label htmlFor="dropoffLocation">Dropoff Location *</label>
-                                    <input
-                                        type="text"
-                                        id="dropoffLocation"
-                                        name="dropoffLocation"
-                                        value={orderData.dropoffLocation}
-                                        onChange={handleInputChange}
-                                        className="form-control"
-                                        required
-                                    />
-                                </div>
-                                
-                                <div className="form-group">
-                                    <label htmlFor="scheduledAt">Scheduled Date *</label>
-                                    <input
-                                        type="datetime-local"
-                                        id="scheduledAt"
-                                        name="scheduledAt"
-                                        value={orderData.scheduledAt}
-                                        onChange={handleInputChange}
-                                        className="form-control"
-                                        required
-                                    />
-                                </div>
-                                
-                                <div className="form-group">
-                                    <label htmlFor="description">Description (Optional)</label>
-                                    <textarea
-                                        id="description"
-                                        name="description"
-                                        value={orderData.description}
-                                        onChange={handleInputChange}
-                                        className="form-control"
-                                        rows="3"
-                                    />
-                                </div>
-                                
-                                <button 
-                                    type="submit"
-                                    disabled={isLoading}
-                                    className={`btn-submit ${isLoading ? 'bg-gray-400 cursor-not-allowed' : ''}`}
-                                >
-                                    {isLoading ? 'Creating Order...' : 'Create Order & Add Items'}
-                                </button>
-                            </form>
-                        </>
-                    ) : (
-                        <form onSubmit={handleSubmitOrderDetails} className="order-form">
-                            <h2 className="step-title">Step 2: Add Items</h2>
-                            {createdRequestId ? (
-                                <CreateItem 
-                                    requestId={createdRequestId}
-                                    onItemAdded={(item) => {
-                                        console.log('New item added:', item);
-                                        setItems(prev => [...prev, item]);
-                                    }}
-                                />
-                            ) : (
-                                <div className="error-message">
-                                    Please create an order first.
-                                    <button 
-                                        onClick={() => setStep(1)}
-                                        className="link"
-                                    >
-                                        Go back
-                                    </button>
-                                </div>
-                            )}
-                        </form>
-                    )}
-                </div>
+        <div className="main-container">
+            <div className="order-title-container">
+                <h1 className="order-title">Order Registration</h1>
+                {!orderData && (
+                    <button
+                        onClick={() => setShowCreateModal(true)}
+                        disabled={isLoading}
+                        className="btn-create"
+                    >
+                        {isLoading ? 'Creating...' : 'Create New Order'}
+                    </button>
+                )}
             </div>
-        </>
+
+            {orderData && createdRequestId && (
+                <OrderDetailsCard
+                    orderData={orderData}
+                    items={items}
+                    onAddItem={handleAddItem}
+                    onSaveDraft={handleSaveDraft}
+                    onPublish={handlePublish}
+                    isLoading={isLoading}
+                    userOrderCount={userOrderCount}
+                    onEditRequest={() => setShowCreateModal(true)}
+                    onEditItem={() => {}}
+                />
+            )}
+
+            {showCreateModal && (
+                <CreateOrderModal
+                    show={showCreateModal}
+                    onHide={() => setShowCreateModal(false)}
+                    onSubmit={handleCreateOrder}
+                    isLoading={isLoading}
+                />
+            )}
+
+            {showAddItemModal && (
+                <AddItemModal
+                    show={showAddItemModal}
+                    onHide={() => setShowAddItemModal(false)}
+                    requestId={createdRequestId}
+                    onItemAdded={(newItem) => setItems((prev) => [...prev, newItem])}
+                />
+            )}
+        </div>
     );
 };
 
 export default Order;
-

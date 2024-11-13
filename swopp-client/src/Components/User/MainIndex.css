@@ -4,12 +4,8 @@ body {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background: linear-gradient(to bottom, rgb(90, 98, 200), 50%,rgb(134, 139, 197) 70%);
+    height: 100%;
   }
-
-  html {
-    height: 100vh;
-  }
-  
 
   .MainIndex {
     width: 100%;
