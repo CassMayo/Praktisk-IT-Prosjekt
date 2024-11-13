@@ -324,5 +324,22 @@ namespace api.Controllers
                 return StatusCode(500, new { message = "An error occurred while fetching items." });
             }
         }
+         [HttpGet("{id}")]
+        public async Task<IActionResult> GetItem(int id)
+        {
+            try
+            {
+                var item = await _itemRepository.GetItemByIdAsync(id);
+                if (item == null)
+                    return NotFound(new { message = "Item not found." });
+
+                return Ok(item);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error fetching item {ItemId}", id);
+                return StatusCode(500, new { message = "An error occurred while fetching the item." });
+            }
+        }
     }
 }

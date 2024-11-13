@@ -55,6 +55,7 @@ namespace api.Controllers
                     Description = requestDTO.Description,
                     ScheduledAt = requestDTO.ScheduledAt,
                     AlternateDate = requestDTO.AlternateDate,
+                    // Set the status to Draft by default
                     Status = RequestStatus.Draft, 
                     Sender = user
                 };
