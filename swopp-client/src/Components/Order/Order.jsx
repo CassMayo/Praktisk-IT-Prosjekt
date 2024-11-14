@@ -204,7 +204,7 @@ const Order = () => {
 
             if (response.ok) {
                 setOrderStatus(RequestStatus.Pending);
-                navigate('Order-success');
+                navigate('/Order-success');
             } else {
                 throw new Error('Failed to publish order');
             }

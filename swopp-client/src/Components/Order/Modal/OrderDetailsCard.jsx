@@ -15,7 +15,7 @@ const formatDate = (dateString) => {
 
 const OrderDetailsCard = ({
     orderData,
-    items,
+    items: initialItems,
     onAddItem,
     onSaveDraft,
     onPublish,
@@ -27,11 +27,12 @@ const OrderDetailsCard = ({
     status = RequestStatus.Draft
 }) => {
     const [showItems, setShowItems] = useState(true);
+    const [items, setItems] = useState(initialItems);
     const isDraft = status === RequestStatus.Draft;
 
     useEffect(() => {
-        console.log('Items received in OrderDetailsCard:', items); // Debug log
-    }, [items]);
+        setItems(initialItems);
+    }, [initialItems]);
 
     const handlePublish = () => {
         if (!items || items.length === 0) {
@@ -47,6 +48,20 @@ const OrderDetailsCard = ({
         } else {
             alert("Items can only be added when the order is in Draft status");
         }
+    };
+
+    const handleItemDelete = (itemId) => {
+        setItems(currentItems => currentItems.filter(item => item.itemId !== itemId));
+        onItemDelete?.(itemId);
+    };
+
+    const handleItemUpdate = (updatedItem) => {
+        setItems(currentItems => 
+            currentItems.map(item => 
+                item.itemId === updatedItem.itemId ? updatedItem : item
+            )
+        );
+        onItemUpdate?.(updatedItem);
     };
 
     return (
@@ -101,8 +116,8 @@ const OrderDetailsCard = ({
                                         key={item.itemId}
                                         item={item}
                                         isDraft={isDraft}
-                                        onItemUpdated={onItemUpdate}
-                                        onItemDeleted={onItemDelete}
+                                        onItemUpdated={handleItemUpdate}
+                                        onItemDeleted={handleItemDelete}
                                     />
                                 ))}
                             </div>

@@ -1,9 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Trash2, Edit } from 'lucide-react';
+import { UserContext } from '../../Context/UserContext';
 import EditItemModal from './EditItemModal';
 import './ItemCard.css';
 
 const ItemCard = ({ item, isDraft, onItemUpdated, onItemDeleted }) => {
+    const { token } = useContext(UserContext);
     const [showEditModal, setShowEditModal] = useState(false);
     const [isDeleting, setIsDeleting] = useState(false);
     const [error, setError] = useState(null);
@@ -22,23 +24,26 @@ const ItemCard = ({ item, isDraft, onItemUpdated, onItemDeleted }) => {
         if (!window.confirm('Are you sure you want to delete this item?')) {
             return;
         }
-
+    
         setIsDeleting(true);
         setError(null);
-
+        
         try {
             const response = await fetch(`http://localhost:5078/api/item/${item.itemId}`, {
                 method: 'DELETE',
                 headers: {
-                    'Authorization': `Bearer ${localStorage.getItem('token')}`,
+                    'Authorization': `Bearer ${token}`
                 }
             });
-
+    
             if (!response.ok) {
-                throw new Error('Failed to delete item');
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Failed to delete item');
             }
-
+    
+            // Call onItemDeleted with the itemId
             onItemDeleted?.(item.itemId);
+            
         } catch (err) {
             setError(err.message);
             console.error('Error deleting item:', err);
@@ -81,16 +86,16 @@ const ItemCard = ({ item, isDraft, onItemUpdated, onItemDeleted }) => {
                         )}
                         {isDraft && (
                             <div className="item-actions">
-                                <button 
-                                    className="btn btn-edit" 
+                                <button
+                                    className="btn btn-edit"
                                     onClick={handleEditClick}
                                     disabled={isDeleting}
                                 >
                                     <Edit className="icon" />
                                     Edit
                                 </button>
-                                <button 
-                                    className="btn btn-delete" 
+                                <button
+                                    className="btn btn-delete"
                                     onClick={handleDelete}
                                     disabled={isDeleting}
                                 >

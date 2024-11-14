@@ -1,8 +1,10 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { UserContext } from '../Context/UserContext';
 import { useNavigate } from 'react-router-dom';
-import EditItemModal from './Modal/EditItemModal';
+import ItemCard from './Modal/ItemCard';
+import AddItemModal from './Modal/AddItemModal';
 import './Modal/OrderDetailsCard.css';
+import './MyOrder.css';
 
 const RequestStatus = {
   0: 'Draft',
@@ -13,34 +15,6 @@ const RequestStatus = {
   5: 'Lost'
 };
 
-const ItemCard = ({ item }) => {
-  const imageUrl = item.image 
-    ? `http://localhost:5078${item.image}` 
-    : '/api/placeholder/200/150';
-
-  return (
-    <div className="item-card">
-      <div className="item-card-inner">
-        <div className="item-image-container">
-          <img
-            src={imageUrl}
-            alt={item.itemName}
-            className="item-image"
-          />
-        </div>
-        <div className="item-info">
-          <div className="item-dimensions">
-            {item.width || "50"} x {item.height || "50"} x {item.depth || "50"} cm
-          </div>
-          <div className="item-weight">
-            {item.weight || "70"} KG
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-};
-
 const MyOrder = () => {
   const { user, token } = useContext(UserContext);
   const navigate = useNavigate();
@@ -49,10 +23,10 @@ const MyOrder = () => {
   const [error, setError] = useState(null);
   const [showItems, setShowItems] = useState({});
   const [isDeleting, setIsDeleting] = useState(false);
-  const [showEditItemModal, setShowEditItemModal] = useState(false);
-  const [selectedItem, setSelectedItem] = useState(null);
-  const [selectedOrder, setSelectedOrder] = useState(null);
   const [retryCount, setRetryCount] = useState(0);
+  const [showAddItemModal, setShowAddItemModal] = useState(false);
+  const [selectedOrderId, setSelectedOrderId] = useState(null);
+  const [isPublishing, setIsPublishing] = useState(false);
 
   const fetchOrders = async () => {
     if (!user?.email || !token) {
@@ -66,7 +40,7 @@ const MyOrder = () => {
       setError(null);
 
       const ordersResponse = await fetch(
-        `${process.env.REACT_APP_API_URL || 'http://localhost:5078'}/api/request/user/${encodeURIComponent(user.email)}`,
+        `http://localhost:5078/api/request/user/${encodeURIComponent(user.email)}`,
         {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -80,12 +54,11 @@ const MyOrder = () => {
       }
 
       const ordersData = await ordersResponse.json();
-
       const ordersWithItems = await Promise.all(
         ordersData.map(async (order) => {
           try {
             const itemsResponse = await fetch(
-              `${process.env.REACT_APP_API_URL || 'http://localhost:5078'}/api/item/request/${order.requestId}`,
+              `http://localhost:5078/api/item/request/${order.requestId}`,
               {
                 headers: {
                   'Authorization': `Bearer ${token}`,
@@ -95,7 +68,6 @@ const MyOrder = () => {
             );
 
             if (!itemsResponse.ok) {
-              console.warn(`Failed to fetch items for order ${order.requestId}`);
               return { ...order, items: [] };
             }
 
@@ -110,11 +82,9 @@ const MyOrder = () => {
 
       setOrders(ordersWithItems);
       setError(null);
-      setLoading(false);
     } catch (error) {
       console.error('Error fetching orders:', error);
       setError('Failed to load orders. Please try again later.');
-      setLoading(false);
 
       if (retryCount < 3) {
         setTimeout(() => {
@@ -122,8 +92,76 @@ const MyOrder = () => {
           fetchOrders();
         }, 3000);
       }
+    } finally {
+      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    fetchOrders();
+  }, [user?.email, token]);
+
+  const formatDate = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+  };
+
+  const handlePublishOrder = async (orderId) => {
+    const order = orders.find(o => o.requestId === orderId);
+    
+    if (!order.items || order.items.length === 0) {
+        alert('Please add at least one item before publishing');
+        return;
+    }
+
+    if (!window.confirm('Are you sure you want to publish this order?')) {
+        return;
+    }
+
+    setIsPublishing(true);
+    try {
+        const response = await fetch(
+            `http://localhost:5078/api/request/${orderId}/status`,
+            {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                // Send the status as a string matching your enum
+                body: JSON.stringify("Pending")  // This matches your RequestStatus enum
+            }
+        );
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.message || 'Failed to publish order');
+        }
+
+        // Update local state
+        setOrders(currentOrders =>
+            currentOrders.map(ord => 
+                ord.requestId === orderId
+                    ? { ...ord, status: 1 }
+                    : ord
+            )
+        );
+
+        // Optionally refresh the orders
+        await fetchOrders();
+
+    } catch (error) {
+        console.error('Error publishing order:', error);
+        setError('Failed to publish order. Please try again later.');
+    } finally {
+        setIsPublishing(false);
+    }
+};
 
   const handleDeleteOrder = async (orderId) => {
     if (!window.confirm('Are you sure you want to cancel this order?')) return;
@@ -131,7 +169,7 @@ const MyOrder = () => {
     setIsDeleting(true);
     try {
       const response = await fetch(
-        `${process.env.REACT_APP_API_URL || 'http://localhost:5078'}/api/request/${orderId}`,
+        `http://localhost:5078/api/request/${orderId}`,
         {
           method: 'DELETE',
           headers: {
@@ -158,7 +196,22 @@ const MyOrder = () => {
   };
 
   const handleAddItem = (orderId) => {
-    navigate(`/order/${orderId}/add-item`);
+    setSelectedOrderId(orderId);
+    setShowAddItemModal(true);
+  };
+
+  const handleItemAdded = (newItem) => {
+    setOrders(currentOrders =>
+      currentOrders.map(order =>
+        order.requestId === selectedOrderId
+          ? {
+            ...order,
+            items: [...(order.items || []), newItem]
+          }
+          : order
+      )
+    );
+    setShowAddItemModal(false);
   };
 
   const toggleShowItems = (orderId) => {
@@ -168,31 +221,43 @@ const MyOrder = () => {
     }));
   };
 
-  const formatDate = (date) => {
-    return date ? new Date(date).toLocaleString('en-SE', {
-      day: 'numeric',
-      month: 'short',
-    }) : 'Anytime';
+  const handleItemUpdate = (orderId) => (updatedItem) => {
+    setOrders(currentOrders =>
+      currentOrders.map(order =>
+        order.requestId === orderId
+          ? {
+            ...order,
+            items: order.items.map(item =>
+              item.itemId === updatedItem.itemId ? updatedItem : item
+            )
+          }
+          : order
+      )
+    );
   };
 
-  // Only show edit button for drafts with no items
-  const shouldShowEditButton = (order) => {
-    return order.status === 0 && (!order.items || order.items.length === 0);
+  const handleItemDelete = (orderId) => (itemId) => {
+    setOrders(currentOrders =>
+      currentOrders.map(order =>
+        order.requestId === orderId
+          ? {
+            ...order,
+            items: order.items.filter(item => item.itemId !== itemId)
+          }
+          : order
+      )
+    );
   };
 
-  // Only show add item button for drafts
-  const shouldShowAddItem = (order) => {
-    return order.status === 0;
+  const handleStatusChange = (orderId, newStatus) => {
+    setOrders(currentOrders =>
+      currentOrders.map(order =>
+        order.requestId === orderId
+          ? { ...order, status: newStatus }
+          : order
+      )
+    );
   };
-
-  // Show cancel button for both drafts and pending
-  const shouldShowCancel = (order) => {
-    return order.status === 0 || order.status === 1;
-  };
-
-  useEffect(() => {
-    fetchOrders();
-  }, [user?.email, token]);
 
   if (loading) {
     return (
@@ -207,13 +272,7 @@ const MyOrder = () => {
     return (
       <div className="my-orders-error">
         <p>{error}</p>
-        <button 
-          onClick={() => {
-            setRetryCount(0);
-            fetchOrders();
-          }}
-          className="btn-retry"
-        >
+        <button onClick={fetchOrders} className="btn-retry">
           Try Again
         </button>
       </div>
@@ -225,9 +284,9 @@ const MyOrder = () => {
       <div className="my-orders-empty">
         <h2>My Orders</h2>
         <p>You don't have any orders yet.</p>
-        <button 
-          onClick={() => navigate('/order')} 
-          className="btn-create-order"
+        <button
+          onClick={() => navigate('/order')}
+          className="btn-create"
         >
           Create New Order
         </button>
@@ -237,105 +296,141 @@ const MyOrder = () => {
 
   return (
     <div className="my-orders-container">
-      <h2>My Orders</h2>
+      <div className="order-title">
+        <h2>My Orders</h2>
+        <button
+          onClick={() => navigate('/order')}
+          className="btn-create"
+        >
+          Create New Order
+        </button>
+      </div>
       <div className="orders-grid">
-        {orders.map((order) => (
-          <div key={order.requestId} className="order-card">
-            <div className="order-card-header">
-              <div className="order-info">
-                <h3 className="order-number">Order #{order.requestId}</h3>
-                <span className={`status-badge status-${RequestStatus[order.status]?.toLowerCase()}`}>
-                  {RequestStatus[order.status]}
-                </span>
-                {shouldShowEditButton(order) && (
-                  <button
-                    onClick={() => handleEditOrder(order.requestId)}
-                    className="btn-edit-request"
-                  >
-                    Edit request
-                  </button>
-                )}
-              </div>
-              <div className="order-actions">
-                {shouldShowAddItem(order) && (
-                  <button
-                    onClick={() => handleAddItem(order.requestId)}
-                    className="btn-add-item"
-                  >
-                    Add Item
-                  </button>
-                )}
-                {shouldShowCancel(order) && (
-                  <button
-                    onClick={() => handleDeleteOrder(order.requestId)}
-                    className="btn-swoop"
-                    disabled={isDeleting}
-                  >
-                    Cancel
-                  </button>
-                )}
-              </div>
-            </div>
+        {orders.map((order) => {
+          const isDraft = order.status === 0;
+          const isPending = order.status === 1;
 
-            <div className="location-details">
-              <div className="location-point">
-                <div className="point"></div>
-                <span>{order.pickupLocation}</span>
-              </div>
-              <div className="connection-line"></div>
-              <div className="location-point">
-                <div className="point"></div>
-                <span>{order.dropoffLocation}</span>
-              </div>
-            </div>
-
-            {order.items?.length > 0 && (
-              <div className="items-section">
-                <div className="items-header">
-                  <div className="packages-count">
-                    <div className="packages-icon">📦</div>
-                    <span>{order.items.length} packages</span>
-                  </div>
-                  <button
-                    className="btn-toggle"
-                    onClick={() => toggleShowItems(order.requestId)}
-                  >
-                    {showItems[order.requestId] ? 'Hide Items' : 'Show Items'}
-                  </button>
+          return (
+            <div key={order.requestId} className="order-card">
+              <div className="order-card-header">
+                <div className="order-info">
+                  <h3 className="order-number">Order #{order.requestId}</h3>
+                  <span className={`status-badge status-${RequestStatus[order.status]?.toLowerCase()}`}>
+                    {RequestStatus[order.status]}
+                  </span>
+                  {isDraft && !order.items?.length && (
+                    <button
+                      onClick={() => handleEditOrder(order.requestId)}
+                      className="btn-edit-request"
+                    >
+                      Edit request
+                    </button>
+                  )}
                 </div>
+                <div className="order-actions">
+                  {isDraft && (
+                    <>
+                      <button
+                        onClick={() => handleAddItem(order.requestId)}
+                        className="btn-add-item"
+                      >
+                        Add Item
+                      </button>
+                      <button
+                        onClick={() => handlePublishOrder(order.requestId)}
+                        className="btn-swoop btn-publish"
+                        disabled={isPublishing || !order.items?.length}
+                        title={!order.items?.length ? 'Add at least one item to publish' : ''}
+                      >
+                        {isPublishing ? 'Publishing...' : 'Publish Order'}
+                      </button>
+                    </>
+                  )}
+                  {(isDraft || isPending) && (
+                    <button
+                      onClick={() => handleDeleteOrder(order.requestId)}
+                      className="btn-swoop"
+                      disabled={isDeleting}
+                    >
+                      Cancel
+                    </button>
+                  )}
+                </div>
+              </div>
 
-                {showItems[order.requestId] && (
-                  <div className="items-container">
-                    <div className="items-grid">
-                      {order.items.map((item) => (
-                        <ItemCard 
-                          key={item.itemId}
-                          item={item}
-                        />
-                      ))}
+              {order.items?.length > 0 && (
+                <div className="items-section">
+                  <div className="items-header">
+                    <div className="packages-count">
+                      <div className="packages-icon">📦</div>
+                      <span>{order.items.length} packages</span>
                     </div>
+                    <button
+                      className="btn-toggle"
+                      onClick={() => toggleShowItems(order.requestId)}
+                    >
+                      {showItems[order.requestId] ? 'Hide Items' : 'Show Items'}
+                    </button>
                   </div>
-                )}
-              </div>
-            )}
 
-            <div className="order-info-grid">
-              <div className="info-item">
-                <label>Scheduled Dates</label>
-                <span>
-                  {formatDate(order.scheduledAt)} - {formatDate(order.alternateDate)}
-                </span>
-              </div>
-              {order.description && (
-                <div className="info-item">
-                  <label>Description</label>
-                  <span>{order.description}</span>
+                  {showItems[order.requestId] && (
+                    <div className="items-container">
+                      <div className="items-grid">
+                        {order.items.map((item) => (
+                          <ItemCard
+                            key={item.itemId}
+                            item={item}
+                            isDraft={isDraft}
+                            onItemUpdated={handleItemUpdate(order.requestId)}
+                            onItemDeleted={handleItemDelete(order.requestId)}
+                          />
+                        ))}
+                      </div>
+                    </div>
+                  )}
                 </div>
               )}
+
+              <div className="location-details">
+                <div className="location-point">
+                  <div className="point"></div>
+                  <span>{order.pickupLocation}</span>
+                </div>
+                <div className="connection-line"></div>
+                <div className="location-point">
+                  <div className="point"></div>
+                  <span>{order.dropoffLocation}</span>
+                </div>
+              </div>
+
+              <div className="order-info-grid">
+                <div className="info-item">
+                  <label>Scheduled Dates</label>
+                  <span>
+                    {formatDate(order.scheduledAt)} - {formatDate(order.alternateDate)}
+                  </span>
+                </div>
+                {order.description && (
+                  <div className="info-item">
+                    <label>Description</label>
+                    <span>{order.description}</span>
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
+
+      {showAddItemModal && (
+        <AddItemModal
+          show={showAddItemModal}
+          onHide={() => setShowAddItemModal(false)}
+          requestId={selectedOrderId}
+          onItemAdded={handleItemAdded}
+          onStatusChange={(newStatus) => handleStatusChange(selectedOrderId, newStatus)}
+        />
+      )}
     </div>
   );
 };

@@ -39,7 +39,7 @@ const App = () => {
           <Route path="/order-dashboard" element={<OrderDashboard />} />
           <Route path="/user-orders" element={<UserOrders />} />
           <Route path="/my-order" element={<MyOrder />} />
-          <Route path="/Home/Order-success" element={<OrderSuccessPage />} />
+          <Route path="/Order-success" element={<OrderSuccessPage />} />
         </Routes>
       </Router>
     </UserProvider>

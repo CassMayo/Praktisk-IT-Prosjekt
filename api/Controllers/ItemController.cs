@@ -248,17 +248,29 @@ namespace api.Controllers
                 return StatusCode(500, new { message = "An error occurred while updating the item." });
             }
         }
+        
         [HttpDelete("{id}")]
         [Authorize]
         public async Task<IActionResult> DeleteItem(int id)
         {
+            _logger.LogInformation("Delete request received for item ID: {ItemId}", id);
+            
             try
             {
                 var item = await _itemRepository.GetItemByIdAsync(id);
+                
+                _logger.LogInformation("Item fetch result: {ItemFound}", item != null ? "Found" : "Not Found");
+                
                 if (item == null)
+                {
+                    _logger.LogWarning("Item not found with ID: {ItemId}", id);
                     return NotFound(new { message = "Item not found." });
+                }
 
                 var email = User.FindFirst(ClaimTypes.Email)?.Value;
+                _logger.LogInformation("User email: {Email}, Item's Request SenderEmail: {SenderEmail}", 
+                    email, item.Request?.SenderEmail);
+                    
                 if (item.Request.SenderEmail != email)
                 {
                     _logger.LogWarning("User {UserEmail} does not own request {RequestId}", email, item.RequestId);
@@ -266,36 +278,17 @@ namespace api.Controllers
                 }
 
                 // Can only delete items from requests in Draft status
+                _logger.LogInformation("Request status: {Status}", item.Request?.Status);
                 if (item.Request.Status != RequestStatus.Draft)
                 {
                     return BadRequest(new { message = "Can only delete items from requests in Draft status." });
                 }
 
-                // Delete image file if exists
-                if (!string.IsNullOrEmpty(item.Image))
-                {
-                    var fileName = Path.GetFileName(item.Image);
-                    var filePath = Path.Combine(_uploadDirectory, fileName);
-                    if (System.IO.File.Exists(filePath))
-                    {
-                        System.IO.File.Delete(filePath);
-                    }
-                }
-
                 var deleted = await _itemRepository.DeleteItemAsync(id);
                 if (!deleted)
-                    return StatusCode(500, new { message = "An error occurred while deleting the item." });
-
-                // Check remaining items and update request status if needed
-                var remainingItems = await _itemRepository.GetItemsByRequestIdAsync(item.RequestId);
-                if (!remainingItems.Any())
                 {
-                    var request = await _requestRepository.GetRequestByIdAsync(item.RequestId);
-                    if (request != null)
-                    {
-                        request.Status = RequestStatus.Draft;
-                        await _requestRepository.UpdateRequestAsync(request);
-                    }
+                    _logger.LogError("Failed to delete item {ItemId}", id);
+                    return StatusCode(500, new { message = "An error occurred while deleting the item." });
                 }
 
                 _logger.LogInformation("Successfully deleted item {ItemId}", id);
