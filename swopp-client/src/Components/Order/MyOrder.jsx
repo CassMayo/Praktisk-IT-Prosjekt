@@ -80,7 +80,15 @@ const MyOrder = () => {
         })
       );
 
-      setOrders(ordersWithItems);
+      // Sort orders by creation date and add user-specific order numbers
+      const sortedOrders = ordersWithItems
+        .sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt))
+        .map((order, index) => ({
+          ...order,
+          userOrderNumber: index + 1
+        }));
+
+      setOrders(sortedOrders);
       setError(null);
     } catch (error) {
       console.error('Error fetching orders:', error);
@@ -107,7 +115,9 @@ const MyOrder = () => {
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
-      day: 'numeric'
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
     });
   };
 
@@ -133,8 +143,7 @@ const MyOrder = () => {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
                 },
-                // Send the status as a string matching your enum
-                body: JSON.stringify("Pending")  // This matches your RequestStatus enum
+                body: JSON.stringify("Pending")
             }
         );
 
@@ -143,7 +152,6 @@ const MyOrder = () => {
             throw new Error(errorData.message || 'Failed to publish order');
         }
 
-        // Update local state
         setOrders(currentOrders =>
             currentOrders.map(ord => 
                 ord.requestId === orderId
@@ -152,7 +160,6 @@ const MyOrder = () => {
             )
         );
 
-        // Optionally refresh the orders
         await fetchOrders();
 
     } catch (error) {
@@ -161,7 +168,7 @@ const MyOrder = () => {
     } finally {
         setIsPublishing(false);
     }
-};
+  };
 
   const handleDeleteOrder = async (orderId) => {
     if (!window.confirm('Are you sure you want to cancel this order?')) return;
@@ -314,7 +321,12 @@ const MyOrder = () => {
             <div key={order.requestId} className="order-card">
               <div className="order-card-header">
                 <div className="order-info">
-                  <h3 className="order-number">Order #{order.requestId}</h3>
+                  <div className="order-header-details">
+                    <h3 className="order-number">Your Order #{order.userOrderNumber}</h3>
+                    <span className="order-created-at">
+                      Created: {formatDate(order.createdAt)}
+                    </span>
+                  </div>
                   <span className={`status-badge status-${RequestStatus[order.status]?.toLowerCase()}`}>
                     {RequestStatus[order.status]}
                   </span>

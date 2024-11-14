@@ -63,3 +63,20 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+.order-header-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  
+  .order-created-at {
+    font-size: 0.85rem;
+    color: #666;
+  }
+  
+  .order-number {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #333;
+  }
