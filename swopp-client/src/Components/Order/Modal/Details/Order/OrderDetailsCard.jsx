@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './OrderDetailsCard.css';
-import ItemCard from './ItemCard';
-import { RequestStatus } from '../Constants/RequestStatus';
+import ItemCard from '../Item/ItemCard';
+import { RequestStatus } from '../../../Constants/RequestStatus';
 
 const formatDate = (dateString) => {
     if (!dateString) return '';

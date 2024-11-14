@@ -1,9 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { UserContext } from '../Context/UserContext';
-import CreateOrderModal from './Modal/CreateOrderModal';
-import AddItemModal from './Modal/AddItemModal';
-import OrderDetailsCard from './Modal/OrderDetailsCard';
-import EditRequestModal from './Modal/EditRequestModal';
+import CreateOrderModal from './Modal/Create/Order/CreateOrderModal';
+import AddItemModal from './Modal/Create/Item/AddItemModal';
+import OrderDetailsCard from './Modal/Details/Order/OrderDetailsCard';
+import EditRequestModal from './Modal/Edit/Requeest/EditRequestModal';
 import { useNavigate } from 'react-router-dom';
 import './Order.css';
 

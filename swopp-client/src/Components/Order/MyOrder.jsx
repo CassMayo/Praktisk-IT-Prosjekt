@@ -1,9 +1,9 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { UserContext } from '../Context/UserContext';
 import { useNavigate } from 'react-router-dom';
-import ItemCard from './Modal/ItemCard';
-import AddItemModal from './Modal/AddItemModal';
-import './Modal/OrderDetailsCard.css';
+import ItemCard from './Modal/Details/Item/ItemCard';
+import AddItemModal from './Modal/Create/Item/AddItemModal';
+import './Modal/Details/Order/OrderDetailsCard.css';
 import './MyOrder.css';
 
 const RequestStatus = {

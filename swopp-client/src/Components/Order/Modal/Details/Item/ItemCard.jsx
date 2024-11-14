@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react';
 import { Trash2, Edit } from 'lucide-react';
-import { UserContext } from '../../Context/UserContext';
-import EditItemModal from './EditItemModal';
+import { UserContext } from '../../../../Context/UserContext';
+import EditItemModal from '../../Edit/Item/EditItemModal';
 import './ItemCard.css';
 
 const ItemCard = ({ item, isDraft, onItemUpdated, onItemDeleted }) => {

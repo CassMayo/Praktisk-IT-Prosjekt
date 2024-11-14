@@ -1,7 +1,7 @@
 // AddItemModal.jsx
 
 import React from 'react';
-import CreateItem from '../CreateItem';
+import CreateItem from './CreateItem';
 import './AddItemModal.css';
 
 const AddItemModal = ({ 

@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { UserContext } from '../../Context/UserContext';
+import { UserContext } from '../../../../Context/UserContext';
 //import './EditItemModal.css';
 
 const EditItemModal = ({ show, onHide, item, onItemUpdated, order }) => {
