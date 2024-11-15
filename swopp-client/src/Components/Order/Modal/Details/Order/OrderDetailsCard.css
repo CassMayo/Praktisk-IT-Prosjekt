@@ -280,6 +280,7 @@
 .btn-toggle:hover {
     text-decoration: underline;
 }
+
 .dates-row {
     display: flex;
     align-items: center;

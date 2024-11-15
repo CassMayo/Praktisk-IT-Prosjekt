@@ -11,11 +11,35 @@ namespace api.DAL.Repositories
     {
         private readonly AppDbContext _context;
         private readonly ILogger<RequestRepository> _logger;
+        private readonly string _uploadDirectory;
 
         public RequestRepository(AppDbContext context, ILogger<RequestRepository> logger)
         {
             _context = context;
             _logger = logger;
+            _uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "Images");
+        }
+
+        private async Task DeleteImageAsync(string? imageUrl)
+        {
+            if (string.IsNullOrEmpty(imageUrl))
+                return;
+
+            try
+            {
+                var fileName = Path.GetFileName(imageUrl);
+                var filePath = Path.Combine(_uploadDirectory, fileName);
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                    _logger.LogInformation("Deleted image file: {FileName}", fileName);
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting image file: {ImageUrl}", imageUrl);
+                throw;
+            }
         }
 
         public async Task<IEnumerable<Request>> GetRequestsBySenderAsync(string senderEmail)
@@ -143,17 +167,41 @@ namespace api.DAL.Repositories
             return request;
         }
 
-        public async Task<bool> DeleteRequestAsync(int requestId)
+         public async Task<bool> DeleteRequestAsync(int requestId)
         {
-            var request = await _context.Requests
-                .FirstOrDefaultAsync(r => r.RequestId == requestId);
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                // Get all items with their images for this request
+                var items = await _context.Items
+                    .Where(i => i.RequestId == requestId)
+                    .ToListAsync();
 
-            if (request == null)
-                return false;
+                // Delete all associated images
+                foreach (var item in items) 
+                {
+                    await DeleteImageAsync(item.Image);
+                }
 
-            _context.Requests.Remove(request);
-            await _context.SaveChangesAsync();
-            return true;
+                // Delete the request (which will cascade delete items)
+                var request = await _context.Requests
+                    .FirstOrDefaultAsync(r => r.RequestId == requestId);
+
+                if (request == null)
+                    return false;
+
+                _context.Requests.Remove(request);
+                await _context.SaveChangesAsync();
+                await transaction.CommitAsync();
+                
+                return true;
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                _logger.LogError(ex, "Error deleting request and associated images for RequestId: {RequestId}", requestId);
+                throw;
+            }
         }
     }
 }

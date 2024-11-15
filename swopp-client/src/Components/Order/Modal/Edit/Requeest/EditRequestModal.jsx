@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './CreateOrderModal.css'; // We can reuse the styling
+
 
 const EditRequestModal = ({ show, onHide, onSubmit, isLoading, initialData }) => {
     const [formData, setFormData] = useState({
@@ -19,7 +19,7 @@ const EditRequestModal = ({ show, onHide, onSubmit, isLoading, initialData }) =>
             scheduledAt: formData.anytimeScheduled ? null : formData.scheduledAt,
             alternateDate: formData.anytimeAlternate ? null : formData.alternateDate,
         };
-        onSubmit(dataToSubmit);
+        onSubmit(dataToSubmit); 
     };
 
     if (!show) return null;

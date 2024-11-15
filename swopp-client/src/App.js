@@ -11,7 +11,7 @@ import NavBar from './Components/Navigation/NavBar';
 import { UserProvider } from "./Components/Context/UserContext";
 import ProtectedRoute from "./Components/ProtectedComponent";
 import AllOrders from "./Components/Order/OrderDashboard";
-import CreateItem from "./Components/Order/CreateItem";
+import CreateItem from "./Components/Order/Modal/Create/Item/CreateItem";
 import OrderDashboard from "./Components/Order/OrderDashboard";
 import UserOrders from "./Components/customHooks/UserOrders";
 import MyOrder from "./Components/Order/MyOrder";
@@ -39,7 +39,7 @@ const App = () => {
           <Route path="/order-dashboard" element={<OrderDashboard />} />
           <Route path="/user-orders" element={<UserOrders />} />
           <Route path="/my-order" element={<MyOrder />} />
-          <Route path="/Home/Order-success" element={<OrderSuccessPage />} />
+          <Route path="/Order-success" element={<OrderSuccessPage />} />
         </Routes>
       </Router>
     </UserProvider>

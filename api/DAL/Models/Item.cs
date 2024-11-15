@@ -20,7 +20,7 @@ namespace api.DAL.Models
         
         public required float Price { get; set; }  // Required price of the item
 
-        public required string Image { get; set; }  // New property for item image URL
+        public string? Image { get; set; }  // New property for item image URL
         public required float Width { get; set; }   // New property for item width
         public required float Height { get; set; }  // New property for item height
         public required float Depth { get; set; }   // New property for item depth
