@@ -26,39 +26,6 @@ namespace api.Controllers
             _logger = logger;
             _configuration = configuration;
         }
-        [HttpPost("upload-profile-picture")]
-        [Authorize]
-        public async Task<IActionResult> UploadProfilePicture(IFormFile file)
-        {
-            if (file == null || file.Length == 0)
-                return BadRequest(new { message = "No file uploaded." });
-
-            var email = User.FindFirst(ClaimTypes.Email)?.Value;
-            if (email == null)
-                return Unauthorized(new { message = "Unauthorized." });
-
-            var user = await _userRepository.GetUserByEmailAsync(email);
-            if (user == null)
-                return NotFound(new { message = "User not found." });
-            
-            var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads");
-            if (!Directory.Exists(uploadsFolder))
-            {
-                Directory.CreateDirectory(uploadsFolder);
-            }
-
-            var filePath = Path.Combine("wwwroot", "uploads", $"{email}_{file.FileName}");
-
-            using (var stream = new FileStream(filePath, FileMode.Create))
-            {
-                await file.CopyToAsync(stream);
-            }
-
-            user.Pfp = $"/uploads/{email}_{file.FileName}";
-            await _userRepository.UpdateUserAsync(user);
-
-            return Ok(new { pfp = user.Pfp });
-        }
 
         [HttpPost("register")]
         [AllowAnonymous]
@@ -212,6 +179,82 @@ namespace api.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "An error occurred while fetching user profile");
+                return StatusCode(500, new { message = "An internal server error occurred. Please try again later." });
+            }
+        }
+
+        // need to add profile picture
+        [HttpPut("update-profile")]
+        [Authorize]
+        public async Task<IActionResult> UpdateProfile([FromBody] UserUpdateDTO updateDTO)
+        {
+            try
+            {
+                //Extract email from the "JWT" Token's 'sub' claim
+                var email = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+                if (email == null)
+                {
+                    return Unauthorized(new { message = "Unauthorized" });
+                }
+
+                //fetch the user details from the repository
+                var user = await _userRepository.GetUserByEmailAsync(email);
+                if (user == null)
+                {
+                    return NotFound(new { message = "User not found" });
+                }
+
+                if (email != user.Email)
+                {
+                    return Unauthorized(new { message = "Unauthorized" });
+                }
+
+                //Update the user's profile details
+                user.Name = updateDTO.Name;
+                await _userRepository.UpdateUserAsync(user);
+
+                return Ok(new { message = "Profile updated successfully" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while updating user profile");
+                return StatusCode(500, new { message = "An internal server error occurred. Please try again later." });
+            }
+        }
+    
+        [HttpDelete("delete-profile")]
+        [Authorize]
+        public async Task<IActionResult> DeleteProfile()
+        {
+            try
+            {
+                //Extract email from the "JWT" Token's 'sub' claim
+                var email = User.FindFirstValue(JwtRegisteredClaimNames.Sub);
+                if (email == null)
+                {
+                    return Unauthorized(new { message = "Unauthorized" });
+                }
+
+                //fetch the user details from the repository
+                var user = await _userRepository.GetUserByEmailAsync(email);
+                if (user == null)
+                {
+                    return NotFound(new { message = "User not found" });
+                }
+
+                if (email != user.Email)
+                {
+                    return Unauthorized(new { message = "Unauthorized" });
+                }
+
+                //Delete the user's profile
+                await _userRepository.DeleteUserAsync(email);
+
+                return Ok(new { message = "Profile deleted successfully" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "An error occurred while deleting user profile");
                 return StatusCode(500, new { message = "An internal server error occurred. Please try again later." });
             }
         }
