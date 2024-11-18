@@ -5,6 +5,7 @@ import { UserContext } from '../Context/UserContext'; // Assuming you have UserC
 const RequestStatus = {
     0: 'Draft',
     1: 'Pending',
+    2: 'Accepted',
     3: 'Completed',
     4: 'Cancelled',
     5: 'Lost'

@@ -11,7 +11,7 @@ using api.DAL.Models;
 namespace api.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241118173912_InitDb")]
+    [Migration("20241118182016_InitDb")]
     partial class InitDb
     {
         /// <inheritdoc />
@@ -152,11 +152,12 @@ namespace api.Migrations
             modelBuilder.Entity("api.DAL.Models.Request", b =>
                 {
                     b.HasOne("api.DAL.Models.User", "Driver")
-                        .WithMany()
-                        .HasForeignKey("DriverEmail");
+                        .WithMany("DriverRequests")
+                        .HasForeignKey("DriverEmail")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.HasOne("api.DAL.Models.User", "Sender")
-                        .WithMany("Requests")
+                        .WithMany("SentRequests")
                         .HasForeignKey("SenderEmail")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -173,7 +174,9 @@ namespace api.Migrations
 
             modelBuilder.Entity("api.DAL.Models.User", b =>
                 {
-                    b.Navigation("Requests");
+                    b.Navigation("DriverRequests");
+
+                    b.Navigation("SentRequests");
                 });
 #pragma warning restore 612, 618
         }

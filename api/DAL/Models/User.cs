@@ -20,6 +20,10 @@ namespace api.DAL.Models
         [Required]
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;  // Creation timestamp with default
 
-        public virtual List<Request>? Requests { get; set; }  // Navigation property for Requests
+        // Navigation property for requests where the user is the sender
+        public ICollection<Request>? SentRequests { get; set; }
+
+        // Navigation property for requests where the user is the driver
+        public ICollection<Request>? DriverRequests { get; set; }
     }
 }

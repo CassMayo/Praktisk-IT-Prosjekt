@@ -27,9 +27,17 @@ namespace api.DAL.Models
 
             // cascade delete requests when user is deleted
             modelBuilder.Entity<User>()
-                .HasMany(u => u.Requests)
+                .HasMany(u => u.SentRequests)
                 .WithOne(r => r.Sender)
+                .HasForeignKey(r => r.SenderEmail)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // remove driver from request when driver is deleted
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.DriverRequests)
+                .WithOne(r => r.Driver)
+                .HasForeignKey(r => r.DriverEmail)
+                .OnDelete(DeleteBehavior.SetNull);
 
 
             // cascade delete items when request is deleted 
@@ -39,6 +47,7 @@ namespace api.DAL.Models
             modelBuilder.Entity<Request>()
                 .HasMany(r => r.Items)
                 .WithOne(i => i.Request)
+                .HasForeignKey(i => i.RequestId)
                 .OnDelete(DeleteBehavior.Cascade);
         }
     }

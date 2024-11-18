@@ -50,7 +50,8 @@ namespace api.Migrations
                         name: "FK_Requests_Users_DriverEmail",
                         column: x => x.DriverEmail,
                         principalTable: "Users",
-                        principalColumn: "Email");
+                        principalColumn: "Email",
+                        onDelete: ReferentialAction.SetNull);
                     table.ForeignKey(
                         name: "FK_Requests_Users_SenderEmail",
                         column: x => x.SenderEmail,
