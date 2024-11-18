@@ -160,12 +160,6 @@ const AdminDashboard = () => {
                                         <td>{user.email}</td>
                                         <td>
                                             <button
-                                                onClick={() => handleUpdateUser(user.email)}
-                                                className="btn-update"
-                                            >
-                                                Update
-                                            </button>
-                                            <button
                                                 onClick={() => handleDeleteUser(user.email)}
                                                 className="btn-delete"
                                             >
@@ -177,7 +171,7 @@ const AdminDashboard = () => {
                             </tbody>
                         </table>
                     )}
-                </div>
+                </div>  
 
                 {/* Requests Section */}
                 <div className="dashboard-section">
