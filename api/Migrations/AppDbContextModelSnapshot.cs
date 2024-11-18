@@ -34,7 +34,6 @@ namespace api.Migrations
                         .HasColumnType("REAL");
 
                     b.Property<string>("Image")
-                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("ItemName")
@@ -49,6 +48,9 @@ namespace api.Migrations
 
                     b.Property<int>("RequestId")
                         .HasColumnType("INTEGER");
+
+                    b.Property<float>("Weight")
+                        .HasColumnType("REAL");
 
                     b.Property<float>("Width")
                         .HasColumnType("REAL");
@@ -65,6 +67,9 @@ namespace api.Migrations
                     b.Property<int>("RequestId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<DateTime?>("AlternateDate")
+                        .HasColumnType("TEXT");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("TEXT");
@@ -133,7 +138,7 @@ namespace api.Migrations
             modelBuilder.Entity("api.DAL.Models.Item", b =>
                 {
                     b.HasOne("api.DAL.Models.Request", "Request")
-                        .WithMany()
+                        .WithMany("Items")
                         .HasForeignKey("RequestId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -148,7 +153,7 @@ namespace api.Migrations
                         .HasForeignKey("DriverEmail");
 
                     b.HasOne("api.DAL.Models.User", "Sender")
-                        .WithMany()
+                        .WithMany("Requests")
                         .HasForeignKey("SenderEmail")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -156,6 +161,16 @@ namespace api.Migrations
                     b.Navigation("Driver");
 
                     b.Navigation("Sender");
+                });
+
+            modelBuilder.Entity("api.DAL.Models.Request", b =>
+                {
+                    b.Navigation("Items");
+                });
+
+            modelBuilder.Entity("api.DAL.Models.User", b =>
+                {
+                    b.Navigation("Requests");
                 });
 #pragma warning restore 612, 618
         }

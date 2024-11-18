@@ -1,0 +1,113 @@
+.admin-dashboard-container {
+    padding: 20px;
+    background-color: #f9f9f9;
+}
+
+.dashboard-title {
+    font-size: 2em;
+    margin-bottom: 20px;
+}
+
+.dashboard-sections {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.dashboard-section {
+    flex: 1;
+    background-color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    min-width: 300px;
+}
+
+.dashboard-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.dashboard-table th,
+.dashboard-table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.dashboard-table th {
+    background-color: #f2f2f2;
+}
+
+.dashboard-table tr:hover {
+    background-color: #f1f1f1;
+}
+
+.dashboard-section h2 {
+    margin-bottom: 10px;
+}
+
+button {
+    padding: 5px 10px;
+    border: none;
+    background-color: #ff4d4f;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #ff7875;
+}
+
+.btn-retry {
+    background-color: #1890ff;
+}
+
+.btn-retry:hover {
+    background-color: #40a9ff;
+}
+
+.requests-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.request-card {
+    padding: 15px;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    background-color: #fafafa;
+}
+
+.request-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 12px;
+    color: white;
+    font-size: 0.9em;
+}
+
+.status-pending {
+    background-color: #faad14;
+}
+
+.status-completed {
+    background-color: #52c41a;
+}
+
+.status-cancelled {
+    background-color: #ff4d4f;
+}
+
+.request-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+}

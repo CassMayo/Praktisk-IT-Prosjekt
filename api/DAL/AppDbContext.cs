@@ -21,6 +21,25 @@ namespace api.DAL.Models
             // Optional: Configure any specific model relationships or constraints here
 
             base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<User>()
+                .HasKey(u => u.Email);
+
+            // cascade delete requests when user is deleted
+            modelBuilder.Entity<User>()
+                .HasMany(u => u.Requests)
+                .WithOne(r => r.Sender)
+                .OnDelete(DeleteBehavior.Cascade);
+
+
+            // cascade delete items when request is deleted 
+            modelBuilder.Entity<Request>()
+                .HasKey(r => r.RequestId);
+
+            modelBuilder.Entity<Request>()
+                .HasMany(r => r.Items)
+                .WithOne(i => i.Request)
+                .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

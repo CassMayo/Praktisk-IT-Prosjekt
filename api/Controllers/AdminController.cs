@@ -95,6 +95,12 @@ namespace api.Controllers
                     return NotFound(new { message = "User not found." });
                 }
 
+                // check if user email is an admin
+                if (user.Email == "admin")
+                {
+                    return BadRequest(new { message = "Cannot delete admin user." });
+                }
+
                 await _userRepository.DeleteUserAsync(email);
                 return Ok(new { message = "User deleted successfully." });
             }

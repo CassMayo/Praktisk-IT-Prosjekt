@@ -40,6 +40,7 @@ namespace api.Migrations
                     Description = table.Column<string>(type: "TEXT", nullable: true),
                     Status = table.Column<int>(type: "INTEGER", nullable: false),
                     ScheduledAt = table.Column<DateTime>(type: "TEXT", nullable: true),
+                    AlternateDate = table.Column<DateTime>(type: "TEXT", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
@@ -68,7 +69,12 @@ namespace api.Migrations
                     ItemName = table.Column<string>(type: "TEXT", nullable: false),
                     ItemType = table.Column<int>(type: "INTEGER", nullable: false),
                     Description = table.Column<string>(type: "TEXT", nullable: false),
-                    Price = table.Column<float>(type: "REAL", nullable: false)
+                    Price = table.Column<float>(type: "REAL", nullable: false),
+                    Image = table.Column<string>(type: "TEXT", nullable: true),
+                    Width = table.Column<float>(type: "REAL", nullable: false),
+                    Height = table.Column<float>(type: "REAL", nullable: false),
+                    Depth = table.Column<float>(type: "REAL", nullable: false),
+                    Weight = table.Column<float>(type: "REAL", nullable: false)
                 },
                 constraints: table =>
                 {

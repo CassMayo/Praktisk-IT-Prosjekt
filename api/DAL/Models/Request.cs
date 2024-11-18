@@ -31,5 +31,7 @@ namespace api.DAL.Models
 
         public virtual required User Sender { get; set; }
         public virtual User? Driver { get; set; }
+
+        public virtual List<Item>? Items { get; set; }
     }
 }
