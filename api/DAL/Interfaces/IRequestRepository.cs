@@ -15,5 +15,6 @@ namespace api.DAL.Interfaces
         Task<Request> UpdateRequestStatusAsync(int requestId, RequestStatus newStatus);
         Task<Request> AssignDriverToRequestAsync(int requestId, string driverEmail);
         Task<bool> DeleteRequestAsync(int requestId);
+        Task<IEnumerable<Request>> GetAllRequestsAsync();
     }
 }

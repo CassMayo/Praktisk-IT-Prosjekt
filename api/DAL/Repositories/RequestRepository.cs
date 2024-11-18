@@ -203,5 +203,10 @@ namespace api.DAL.Repositories
                 throw;
             }
         }
+
+        public async Task<IEnumerable<Request>> GetAllRequestsAsync()
+        {
+            return await _context.Requests.ToListAsync();
+        }
     }
 }
