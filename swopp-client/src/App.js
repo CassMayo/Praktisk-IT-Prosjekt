@@ -16,6 +16,7 @@ import OrderDashboard from "./Components/Order/OrderDashboard";
 import UserOrders from "./Components/customHooks/UserOrders";
 import MyOrder from "./Components/Order/MyOrder";
 import OrderSuccessPage from "./Components/Order/OrderSuccessPage";
+import AdminDashboard from "./Components/Admin/AdminDashboard";
 
 
 
@@ -23,26 +24,31 @@ import OrderSuccessPage from "./Components/Order/OrderSuccessPage";
 const App = () => {
   return (
     <UserProvider>
-      <Router>
-        <Routes>
-          <Route path="/" element={<MainIndex />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
-          <Route path="/order" element={<Order />} />
-          <Route path="/user" element={
+    <Router>
+      <Routes>
+        <Route path="/admin" element={<AdminDashboard />} />
+        <Route path="/" element={<MainIndex />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/order" element={<Order />} />
+        <Route 
+          path="/user" 
+          element={
             <ProtectedRoute>
               <UserPage />
-            </ProtectedRoute>} />
-            <Route path="/home" element={<HomePage />} /> {/* Home page after login */}
-          <Route path="/all-orders" element={<AllOrders />} />
-          <Route path="/create-item" element={<CreateItem />} />
-          <Route path="/order-dashboard" element={<OrderDashboard />} />
-          <Route path="/user-orders" element={<UserOrders />} />
-          <Route path="/my-order" element={<MyOrder />} />
-          <Route path="/Order-success" element={<OrderSuccessPage />} />
-        </Routes>
-      </Router>
-    </UserProvider>
+            </ProtectedRoute>
+          } 
+        />
+        <Route path="/home" element={<HomePage />} /> {/* Home page after login */}
+        <Route path="/all-orders" element={<AllOrders />} />
+        <Route path="/create-item" element={<CreateItem />} />
+        <Route path="/order-dashboard" element={<OrderDashboard />} />
+        <Route path="/user-orders" element={<UserOrders />} />
+        <Route path="/my-order" element={<MyOrder />} />
+        <Route path="/Order-success" element={<OrderSuccessPage />} />
+      </Routes>
+    </Router>
+  </UserProvider>
   );
 }
 
