@@ -1,16 +1,18 @@
 .btn-create {
-    background-color: var(--primary-button-color);
-    color: white;
+    background-color: rgba(251, 251, 251, 0.251);
+    color: rgb(255, 255, 255);
     border: none;
     padding: 10px 20px;
     border-radius: 8px;
     font-weight: 600;
     cursor: pointer;
     transition: background-color 0.2s;
+    font-size: 25px;
 }
 
 .btn-create:hover {
-    background-color: var(--secondary-button-color);
+    background-color: rgba(159, 159, 159, 0.22);
+
 }
 
 .btn-create:disabled {
@@ -20,11 +22,21 @@
 
 .order-title {
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
+    justify-content: center;
     align-items: center;
+    padding-top: 3rem;
     margin-bottom: 2rem;
     width: 100%;
 }
+
+.order-title h2 {
+    font-size: 42px; /* Increase the font size */
+    font-weight: bold;
+    text-align: center; /* Center the text */
+    margin-bottom: 1rem; /* Add some space below the title */
+}
+
 .modal-overlay {
     position: fixed;
     top: 0;

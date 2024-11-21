@@ -11,6 +11,7 @@ const UserPage = () => {
     const navigate = useNavigate();
     const { Pfp, uploading, uploadError } = usePfp();
     const [profilePicture, setProfilePicture] = useState(user?.Pfp);
+    const [showProfile, setShowProfile] = useState(false); // toggle profile section
 
     const handlePfpChange = async (e) => {
         const file = e.target.files[0];
@@ -24,6 +25,10 @@ const UserPage = () => {
         }
     };
 
+    const toggleProfile = () => {
+        setShowProfile(!showProfile);
+    };
+
     if (!user) {
         navigate('/login');
         return null;
@@ -35,7 +40,10 @@ const UserPage = () => {
             <div className="userpage-container">
                 <div className="user-content-wrapper">
                     {/* Profile Section */}
-                    <div className="profile-section">
+                    <button className="toggle-profile-button" onClick={toggleProfile}>
+                    {showProfile ? "Close Profile" : "Open Profile"}
+                </button>
+                <div className={`profile-section ${showProfile ? "show" : ""}`}>
                         <div className="profile-card">
                             <div className="profile-header">
                                 <div className="profile-picture-container">
@@ -62,14 +70,6 @@ const UserPage = () => {
                             <div className="profile-info">
                                 <h2>{user?.name}</h2>
                                 <p>{user?.email}</p>
-                            </div>
-                            <div className="profile-actions">
-                                <button
-                                    onClick={() => navigate('/order')}
-                                    className="create-order-button"
-                                >
-                                    Create New Order
-                                </button>
                             </div>
                         </div>
                     </div>
