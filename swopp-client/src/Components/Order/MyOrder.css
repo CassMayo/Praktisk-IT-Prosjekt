@@ -8,6 +8,7 @@
     cursor: pointer;
     transition: background-color 0.2s;
     font-size: 25px;
+    
 }
 
 .btn-create:hover {
@@ -31,7 +32,7 @@
 }
 
 .order-title h2 {
-    font-size: 42px; /* Increase the font size */
+    font-size: 50px; 
     font-weight: bold;
     text-align: center; /* Center the text */
     margin-bottom: 1rem; /* Add some space below the title */
@@ -70,6 +71,24 @@
     animation: spin 1s linear infinite;
     margin-right: 8px;
 }
+
+.my-orders-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    padding-bottom: 90px;
+}
+
+.my-orders-empty h2 {
+   font-size: 40px;
+   font-weight: bold;
+}
+
+.my-orders-empty p {
+    font-size: 15px;
+ }
 
 @keyframes spin {
     0% { transform: rotate(0deg); }
