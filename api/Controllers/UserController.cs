@@ -20,11 +20,14 @@ namespace api.Controllers
         private readonly ILogger<UserController> _logger;
         private readonly IConfiguration _configuration;
 
+        private readonly string _uploadDirectory;
+
         public UserController(IUserRepository userRepository, ILogger<UserController> logger, IConfiguration configuration)
         {
             _userRepository = userRepository;
             _logger = logger;
             _configuration = configuration;
+            _uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "Images");
         }
 
         [HttpPost("register")]
@@ -186,7 +189,7 @@ namespace api.Controllers
         // need to add profile picture
         [HttpPut("update-profile")]
         [Authorize]
-        public async Task<IActionResult> UpdateProfile([FromBody] UserUpdateDTO updateDTO)
+        public async Task<IActionResult> UpdateProfile([FromForm] UserUpdateDTO updateDTO)
         {
             try
             {
@@ -211,9 +214,53 @@ namespace api.Controllers
 
                 //Update the user's profile details
                 user.Name = updateDTO.Name;
+                 // Handle image upload
+                string? imageUrl = null;
+                if (updateDTO.ImageFile != null && updateDTO.ImageFile.Length > 0)
+                {
+                    var allowedTypes = new[] { "image/jpeg", "image/png", "image/gif" };
+                    if (!allowedTypes.Contains(updateDTO.ImageFile.ContentType.ToLower()))
+                    {
+                        return BadRequest("Invalid file type. Only JPEG, PNG and GIF are allowed.");
+                    }
+
+                    var fileName = $"{Guid.NewGuid()}{Path.GetExtension(updateDTO.ImageFile.FileName)}";
+                    var filePath = Path.Combine(_uploadDirectory, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await updateDTO.ImageFile.CopyToAsync(stream);
+                    }
+
+                    imageUrl = $"/Uploads/Images/{fileName}";
+                }
+
+                // Delete old profile picture if it exists
+                if (!string.IsNullOrEmpty(user.Image))
+                {
+                    var oldFileName = Path.GetFileName(user.Image);
+                    var oldFilePath = Path.Combine(_uploadDirectory, oldFileName);
+
+                    if (System.IO.File.Exists(oldFilePath))
+                    {
+                        _logger.LogInformation("Deleting old profile picture: {OldFilePath}", oldFilePath);
+                        System.IO.File.Delete(oldFilePath);
+                    }
+                    else
+                    {
+                        _logger.LogWarning("Old profile picture not found at path: {OldFilePath}", oldFilePath);
+                    }
+                }
+
+                // Update user's profile picture URL
+                if (imageUrl != null)
+                {
+                    user.Image = imageUrl;
+                }
+
                 await _userRepository.UpdateUserAsync(user);
 
-                return Ok(new { message = "Profile updated successfully" });
+                return Ok(new { message = "Profile updated successfully", image = user.Image });
             }
             catch (Exception ex)
             {

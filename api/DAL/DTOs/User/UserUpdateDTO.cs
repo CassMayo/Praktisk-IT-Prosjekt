@@ -6,5 +6,6 @@ namespace api.DAL.DTOs.User
     {
         [Required]
         public string Name { get; set; }
+        public IFormFile ImageFile { get; set; }
     }
 }

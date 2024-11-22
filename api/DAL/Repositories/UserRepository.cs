@@ -1,16 +1,25 @@
 using api.DAL.Models;
 using api.DAL.Interfaces;
 using Microsoft.EntityFrameworkCore;
-
 namespace api.DAL.Repositories
 { 
     public class UserRepository : IUserRepository
     {
         private readonly AppDbContext _context;
 
-        public UserRepository(AppDbContext context)
+        private readonly ILogger<UserRepository> _logger;
+        private readonly string _uploadDirectory;
+
+        public UserRepository(AppDbContext context, ILogger<UserRepository> logger)
         {
+             {
             _context = context;
+            _logger = logger;
+            // Set the upload directory for images
+            _uploadDirectory = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", "Images");
+            
+        }
+
         }
 
         public async Task<IEnumerable<User>> GetAllUsersAsync()
@@ -57,6 +66,8 @@ namespace api.DAL.Repositories
             // If no user found, return false
             return false;
         }
+
+        
 
     }
 }

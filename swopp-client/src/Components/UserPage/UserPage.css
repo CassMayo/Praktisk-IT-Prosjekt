@@ -37,12 +37,19 @@ body, #root {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   overflow-y: auto; /* Allow vertical scrolling if content overflows */
   border-radius: 10px;
+  background-size: cover;
+  background-position: center;
 }
 
 .profile-card {
   display: flex;
   flex-direction: column;
   align-items: center;
+  background: rgba(255, 255, 255, 0.8); /* Add a semi-transparent background */
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-top: 20px;
 }
 
 .profile-picture-container {
@@ -58,17 +65,21 @@ body, #root {
   border-radius: 50%;
   object-fit: cover;
   margin-bottom: 10px;
+  border: 3px solid #fff; /* Add a border to the profile picture */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
+
 
 .profile-info h2 {
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 10px;
+  color: var(--main-text-color);
 }
 
 .profile-info p {
   font-size: 16px;
-  color: #202020;
+  color: var(--main-text-color);
 }
 
 .orders-section {
@@ -135,5 +146,29 @@ body, #root {
   .orders-section {
       flex: 1; /* Orders section takes the remaining space */
       width: 100%;
+  }
+}
+
+.change-picture-button {
+  margin-top: 10px;
+  padding: 10px 20px;
+  background-color: var(--primary-button-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.change-picture-button:hover {
+  background-color: var(--primary-button-hover-color);
+}
+
+
+/* Desktop styling */
+@media (min-width: 769px) {
+  .toggle-profile-button {
+      display: none; /* Hide toggle button on desktop */
   }
 }
