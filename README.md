@@ -105,12 +105,11 @@ npm start
 Now wait and  the application should pop up!
 
 # Look at data:
-
-- open DB browse For SQL lite
-Open Database.
-- ![image](https://github.com/user-attachments/assets/6587e695-eb22-4897-a744-f4d0f9ca6efb)
-Find the folder of the project in your computer for example
-- ![image](https://github.com/user-attachments/assets/f78af309-bc63-47ce-baec-4598e5c3b270)
+## open DB browse For SQL lite
+- Open Database.
+![image](https://github.com/user-attachments/assets/6587e695-eb22-4897-a744-f4d0f9ca6efb)
+- Find the folder of the project in your computer for example
+![image](https://github.com/user-attachments/assets/f78af309-bc63-47ce-baec-4598e5c3b270)
 
 
 ![image](https://github.com/user-attachments/assets/8154fb94-7ddd-4d78-92ad-f0a06a31992a)
