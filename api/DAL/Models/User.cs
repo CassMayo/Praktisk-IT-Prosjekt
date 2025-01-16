@@ -11,7 +11,6 @@ namespace api.DAL.Models
         
         public required string Password { get; set; }  // User's password (hashed, I hope)
         
-        [Required]
 
         public string? Image { get; set; }  // Image URL for the user's profile picture
         public bool IsDriver { get; set; } = false;  // Indicates if the user can act as a driver, default is false

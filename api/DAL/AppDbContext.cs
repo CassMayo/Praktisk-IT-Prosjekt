@@ -6,8 +6,8 @@ namespace api.DAL.Models
     public class AppDbContext : DbContext
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { 
-            //Database.Delete();  // Delete the database'
-            //Database.EnsureCreated();  // Create the database if it doesn't exist
+            //Database.EnsureDeleted();  // Delete the database'
+        //Database.EnsureCreated();  // Create the database if it doesn't exist
            
         }
 
